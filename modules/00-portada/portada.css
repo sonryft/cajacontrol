@@ -54,24 +54,15 @@ body {
 
 .splash-logo {
     display: block;
-
-    /* Tamaño del logo */
-    width: 180px;
-    max-width: 70vw;
-    max-height: 180px;
+    width: 320px;
+    max-width: 75vw;
+    max-height: 320px;
     height: auto;
-
     object-fit: contain;
-
-    /* Estado inicial */
     opacity: 0;
-    transform: scale(0.92);
-
-    /* Animación de entrada */
-    animation: logo-appear 1200ms
-               cubic-bezier(.22, 1, .36, 1)
-               forwards;
-}
+    transform: scale(.92);
+    animation: logo-appear 1200ms cubic-bezier(.22,1,.36,1) forwards;
+}}
 
 /* =====================================
    SALIDA DE LA PORTADA
