@@ -1,31 +1,97 @@
-(() => {
-    "use strict";
+/* ========================================
+   CAJACONTROL — INICIO DE SESIÓN
+======================================== */
 
+document.addEventListener("DOMContentLoaded", () => {
     const formulario = document.getElementById("login-form");
-    const campoContrasena = document.getElementById("contrasena");
-    const botonMostrar = document.getElementById("mostrar-password");
-    const mensaje = document.getElementById("mensaje");
+    const campoEmail = document.getElementById("email");
+    const campoPassword = document.getElementById("password");
+    const botonLogin = document.getElementById("login-button");
+    const botonMostrar = document.getElementById("toggle-password");
+    const mensaje = document.getElementById("login-message");
 
-    // Mostrar u ocultar la contraseña.
+    if (
+        !formulario ||
+        !campoEmail ||
+        !campoPassword ||
+        !botonLogin ||
+        !botonMostrar ||
+        !mensaje
+    ) {
+        console.error("CajaControl: faltan elementos del formulario.");
+        return;
+    }
+
+    function mostrarMensaje(texto, tipo = "error") {
+        mensaje.textContent = texto;
+        mensaje.className = `mensaje visible ${tipo}`;
+    }
+
+    function ocultarMensaje() {
+        mensaje.textContent = "";
+        mensaje.className = "mensaje";
+    }
+
+    // Mostrar u ocultar contraseña.
     botonMostrar.addEventListener("click", () => {
-        const mostrar = campoContrasena.type === "password";
+        const estaOculta = campoPassword.type === "password";
 
-        campoContrasena.type = mostrar ? "text" : "password";
-        botonMostrar.textContent = mostrar ? "Ocultar" : "Mostrar";
-        botonMostrar.setAttribute(
-            "aria-label",
-            mostrar ? "Ocultar contraseña" : "Mostrar contraseña"
-        );
+        campoPassword.type = estaOculta ? "text" : "password";
+        botonMostrar.textContent = estaOculta ? "Ocultar" : "Mostrar";
     });
 
-    // Preparar el formulario sin simular un inicio de sesión real.
-    formulario.addEventListener("submit", (evento) => {
+    // Inicio de sesión.
+    formulario.addEventListener("submit", async (evento) => {
         evento.preventDefault();
+        ocultarMensaje();
 
-        mensaje.textContent =
-            "El inicio de sesión todavía no está conectado. " +
-            "El siguiente paso será configurar la autenticación segura.";
+        const email = campoEmail.value.trim();
+        const password = campoPassword.value;
 
-        mensaje.className = "mensaje visible error";
+        if (!email || !password) {
+            mostrarMensaje("Introduce tu correo y contraseña.");
+            return;
+        }
+
+        if (
+            typeof window.supabase === "undefined" ||
+            typeof supabaseClient === "undefined"
+        ) {
+            mostrarMensaje("No se pudo conectar con el sistema. Recarga la página.");
+            console.error("No se encontró la biblioteca o configuración de Supabase.");
+            return;
+        }
+
+        botonLogin.disabled = true;
+        botonLogin.textContent = "Verificando...";
+
+        try {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            if (error) {
+                console.error("Error de autenticación:", error.message);
+                mostrarMensaje(
+                    "No se pudo iniciar sesión. Comprueba tus datos o contacta al administrador."
+                );
+                return;
+            }
+
+            if (data.user) {
+                mostrarMensaje("Autenticación correcta. Preparando tu acceso...", "exito");
+
+                // Todavía no redirigimos: primero configuraremos
+                // los perfiles, roles y permisos de CajaControl.
+                console.log("Sesión iniciada correctamente.");
+            }
+        } catch (error) {
+            console.error("Error inesperado:", error);
+            mostrarMensaje("Ocurrió un error de conexión. Inténtalo nuevamente.");
+        } finally {
+            botonLogin.disabled = false;
+            botonLogin.textContent = "Iniciar sesión";
+        }
     });
-})();
+});
