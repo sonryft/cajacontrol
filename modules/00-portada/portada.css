@@ -2,11 +2,15 @@
    CAJACONTROL — PORTADA DE INICIO
    ===================================== */
 
+/* Reinicio general */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
+/* Fondo de la página */
 
 html,
 body {
@@ -21,7 +25,9 @@ body {
                  "Segoe UI", sans-serif;
 }
 
-/* Pantalla de presentación */
+/* =====================================
+   PANTALLA DE PRESENTACIÓN
+   ===================================== */
 
 .splash-screen {
     position: fixed;
@@ -42,26 +48,34 @@ body {
         visibility 800ms ease;
 }
 
-/* Logotipo */
+/* =====================================
+   LOGOTIPO
+   ===================================== */
 
 .splash-logo {
     display: block;
 
-    width: 72px;
+    /* Tamaño del logo */
+    width: 180px;
+    max-width: 70vw;
+    max-height: 180px;
     height: auto;
-    max-height: 100px;
 
     object-fit: contain;
 
+    /* Estado inicial */
     opacity: 0;
     transform: scale(0.92);
 
+    /* Animación de entrada */
     animation: logo-appear 1200ms
                cubic-bezier(.22, 1, .36, 1)
                forwards;
 }
 
-/* Salida de la portada */
+/* =====================================
+   SALIDA DE LA PORTADA
+   ===================================== */
 
 .splash-screen.is-leaving {
     opacity: 0;
@@ -69,7 +83,9 @@ body {
     pointer-events: none;
 }
 
-/* Entrada suave del logo */
+/* =====================================
+   ANIMACIÓN DE ENTRADA
+   ===================================== */
 
 @keyframes logo-appear {
     from {
@@ -83,7 +99,11 @@ body {
     }
 }
 
-/* Respeto a usuarios que reducen animaciones */
+/* =====================================
+   ACCESIBILIDAD
+   Respeta la preferencia de movimiento
+   reducido del dispositivo
+   ===================================== */
 
 @media (prefers-reduced-motion: reduce) {
     .splash-logo {
