@@ -1,77 +1,130 @@
+/* ========================================
+   CAJACONTROL — INICIO DE SESIÓN
+   Diseño minimalista inspirado en macOS
+======================================== */
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* VARIABLES DEL SISTEMA */
+
 :root {
     color-scheme: dark;
+
     --fondo: #08090c;
     --panel: #111318;
     --borde: rgba(255, 255, 255, 0.09);
+
     --texto: #f5f5f7;
     --secundario: #92949f;
+
     --acento: #8b7cff;
 }
+
+/* ESTRUCTURA GENERAL */
 
 body {
     min-height: 100vh;
     min-height: 100dvh;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
     background: var(--fondo);
     color: var(--texto);
+
     display: flex;
     align-items: center;
     justify-content: center;
+
     padding: 24px;
 }
+
+/* CONTENEDOR PRINCIPAL */
 
 .login-container {
     width: 100%;
     max-width: 400px;
+
     animation: aparecer 700ms ease both;
 }
+
+/* ========================================
+   MARCA CAJACONTROL
+======================================== */
 
 .logo {
     text-align: center;
     margin-bottom: 34px;
 }
 
-.logo img {
-    width: 150px;
-    max-width: 60%;
-    height: auto;
-    object-fit: contain;
+.marca {
+    font-size: 32px;
+    font-weight: 650;
+    letter-spacing: -1.5px;
+    color: var(--texto);
+}
+
+.marca::after {
+    content: ".";
+    color: var(--acento);
 }
 
 .logo p {
-    margin-top: 14px;
+    margin-top: 10px;
+
     color: var(--secundario);
+
     font-size: 13px;
     letter-spacing: 0.5px;
 }
 
+/* ========================================
+   TARJETA DE INICIO DE SESIÓN
+======================================== */
+
 .login-card {
     background: var(--panel);
+
     border: 1px solid var(--borde);
     border-radius: 20px;
+
     padding: 32px;
-    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.25);
+
+    box-shadow:
+        0 24px 80px rgba(0, 0, 0, 0.25);
 }
+
+/* TÍTULO */
 
 .login-card h1 {
     font-size: 25px;
     font-weight: 600;
     letter-spacing: -0.8px;
+
     margin-bottom: 8px;
 }
+
+/* DESCRIPCIÓN */
 
 .descripcion {
     font-size: 14px;
     color: var(--secundario);
+
     margin-bottom: 28px;
+
     line-height: 1.5;
 }
+
+/* ========================================
+   CAMPOS DEL FORMULARIO
+======================================== */
 
 .campo {
     margin-bottom: 20px;
@@ -79,7 +132,9 @@ body {
 
 .campo label {
     display: block;
+
     margin-bottom: 9px;
+
     font-size: 13px;
     color: #d6d7de;
 }
@@ -87,62 +142,107 @@ body {
 .campo input {
     width: 100%;
     height: 48px;
+
     padding: 0 14px;
+
     border-radius: 11px;
     border: 1px solid var(--borde);
+
     outline: none;
+
     background: #0b0c10;
     color: var(--texto);
+
     font-size: 14px;
-    transition: border-color 200ms, box-shadow 200ms;
+
+    transition:
+        border-color 200ms ease,
+        box-shadow 200ms ease;
 }
+
+/* ESTADO ACTIVO DEL CAMPO */
 
 .campo input:focus {
     border-color: var(--acento);
-    box-shadow: 0 0 0 3px rgba(139, 124, 255, 0.12);
+
+    box-shadow:
+        0 0 0 3px rgba(139, 124, 255, 0.12);
 }
+
+/* TEXTO DE AYUDA */
 
 .campo input::placeholder {
     color: #656773;
 }
+
+/* ========================================
+   CAMPO DE CONTRASEÑA
+======================================== */
 
 .password-wrapper {
     position: relative;
 }
 
 .password-wrapper input {
-    padding-right: 65px;
+    padding-right: 75px;
 }
 
 .mostrar-password {
     position: absolute;
+
     top: 0;
     right: 0;
+
     height: 48px;
+
     padding: 0 12px;
+
     border: 0;
     background: transparent;
+
     color: var(--secundario);
+
     font-size: 12px;
+
     cursor: pointer;
+
+    transition: color 200ms ease;
 }
 
 .mostrar-password:hover {
     color: var(--texto);
 }
 
+.mostrar-password:focus-visible {
+    outline: 2px solid var(--acento);
+    outline-offset: -4px;
+    border-radius: 8px;
+}
+
+/* ========================================
+   BOTÓN DE INICIO DE SESIÓN
+======================================== */
+
 .login-button {
     width: 100%;
     height: 49px;
+
     margin-top: 6px;
+
     border: 0;
     border-radius: 11px;
+
     background: var(--texto);
     color: #101116;
+
     font-size: 14px;
     font-weight: 600;
+
     cursor: pointer;
-    transition: transform 180ms, opacity 180ms;
+
+    transition:
+        transform 180ms ease,
+        opacity 180ms ease;
 }
 
 .login-button:hover {
@@ -159,11 +259,23 @@ body {
     cursor: wait;
 }
 
+.login-button:focus-visible {
+    outline: 2px solid var(--acento);
+    outline-offset: 3px;
+}
+
+/* ========================================
+   MENSAJES DEL FORMULARIO
+======================================== */
+
 .mensaje {
     display: none;
+
     margin-top: 16px;
     padding: 12px;
+
     border-radius: 9px;
+
     font-size: 13px;
     line-height: 1.5;
 }
@@ -174,16 +286,30 @@ body {
 
 .mensaje.error {
     background: rgba(255, 90, 90, 0.09);
+
     border: 1px solid rgba(255, 90, 90, 0.2);
+
     color: #ff9a9a;
 }
 
+/* ========================================
+   PIE DE PÁGINA
+======================================== */
+
 .pie {
     margin-top: 25px;
+
     text-align: center;
+
     font-size: 12px;
     color: #686a75;
+
+    line-height: 1.6;
 }
+
+/* ========================================
+   ANIMACIÓN DE ENTRADA
+======================================== */
 
 @keyframes aparecer {
     from {
@@ -197,9 +323,18 @@ body {
     }
 }
 
+/* ========================================
+   ADAPTACIÓN PARA MÓVILES Y TABLETS
+======================================== */
+
 @media (max-width: 480px) {
+
     body {
         padding: 18px;
+    }
+
+    .login-container {
+        max-width: 400px;
     }
 
     .login-card {
@@ -214,9 +349,18 @@ body {
     .logo {
         margin-bottom: 27px;
     }
+
+    .marca {
+        font-size: 30px;
+    }
 }
 
+/* ========================================
+   ACCESIBILIDAD: REDUCIR MOVIMIENTO
+======================================== */
+
 @media (prefers-reduced-motion: reduce) {
+
     *,
     *::before,
     *::after {
