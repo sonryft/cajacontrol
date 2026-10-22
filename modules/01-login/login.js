@@ -1,7 +1,3 @@
-/* ========================================
-   CAJACONTROL — INICIO DE SESIÓN
-======================================== */
-
 document.addEventListener("DOMContentLoaded", () => {
     const formulario = document.getElementById("login-form");
     const campoEmail = document.getElementById("email");
@@ -44,10 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        const cliente = window.supabaseClient;
-
-        if (!window.supabase || !cliente) {
-            mostrarMensaje("No se pudo conectar con Supabase. Recarga la página.");
+        if (!window.supabaseClient) {
+            mostrarMensaje("No se pudo conectar con Supabase.");
+            console.error("No existe window.supabaseClient.");
             return;
         }
 
@@ -55,44 +50,37 @@ document.addEventListener("DOMContentLoaded", () => {
         botonLogin.textContent = "Verificando...";
 
         try {
-            const { data, error } = await cliente.auth.signInWithPassword({
-                email,
-                password
-            });
+            const { data, error } =
+                await window.supabaseClient.auth.signInWithPassword({
+                    email,
+                    password
+                });
 
-            if (error) throw error;
+            if (error) {
+                mostrarMensaje(
+                    error.message === "Invalid login credentials"
+                        ? "Correo o contraseña incorrectos."
+                        : "No se pudo iniciar sesión: " + error.message
+                );
+                return;
+            }
 
             if (!data.user) {
-                throw new Error("No se pudo identificar al usuario.");
-            }
-
-            mostrarMensaje("Verificando tu perfil...", "exito");
-
-            const { data: perfil, error: errorPerfil } = await cliente
-                .from("perfiles")
-                .select("id, empresa_id, nombre, rol, activo")
-                .eq("id", data.user.id)
-                .maybeSingle();
-
-            if (errorPerfil) throw errorPerfil;
-
-            if (!perfil || perfil.activo !== true) {
-                await cliente.auth.signOut();
-                throw new Error("Tu perfil no existe o está inactivo.");
-            }
-
-            if (!perfil.empresa_id) {
-                await cliente.auth.signOut();
-                throw new Error("Tu usuario no tiene una empresa asignada.");
+                mostrarMensaje("No se pudo verificar tu usuario.");
+                return;
             }
 
             mostrarMensaje("Acceso correcto. Abriendo el panel...", "exito");
 
-            window.location.replace("../02-dashboard/index.html");
+            window.setTimeout(() => {
+                window.location.href = "../02-dashboard/index.html";
+            }, 500);
 
         } catch (error) {
             console.error("Error de inicio de sesión:", error);
-            mostrarMensaje(error.message || "No se pudo iniciar sesión.");
+            mostrarMensaje("Error de conexión. Inténtalo nuevamente.");
+
+        } finally {
             botonLogin.disabled = false;
             botonLogin.textContent = "Iniciar sesión";
         }
