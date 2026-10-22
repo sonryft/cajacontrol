@@ -5,40 +5,31 @@
 ======================================== */
 
 document.addEventListener("DOMContentLoaded", async () => {
-    const contenido = document.querySelector("[data-dashboard]");
     const mensaje = document.getElementById("dashboard-message");
+    const supabaseClient = window.supabaseClient;
 
-    function mostrarMensaje(texto, tipo = "error") {
+    function mostrarError(texto) {
+        console.error("CajaControl:", texto);
+
         if (mensaje) {
             mensaje.textContent = texto;
-            mensaje.className = `mensaje visible ${tipo}`;
+            mensaje.className = "mensaje visible error";
         } else {
-            console.log(texto);
+            alert(texto);
         }
     }
 
-    // Verificar que la biblioteca y la configuración existan.
-    if (
-        typeof window.supabase === "undefined" ||
-        typeof window.supabaseClient === "undefined"
-    ) {
-        mostrarMensaje(
-            "No se pudo conectar con Supabase. Verifica la configuración."
-        );
-        console.error("Falta configurar el cliente de Supabase.");
+    if (!supabaseClient) {
+        mostrarError("No se pudo conectar con Supabase. Revisa supabase.js.");
         return;
     }
 
-    const supabaseClient = window.supabaseClient;
-
     try {
-        // Comprobar si existe una sesión iniciada.
+        // 1. Verificar sesión
         const { data: sesionData, error: sesionError } =
             await supabaseClient.auth.getSession();
 
-        if (sesionError) {
-            throw sesionError;
-        }
+        if (sesionError) throw sesionError;
 
         if (!sesionData.session) {
             window.location.replace("../01-login/index.html");
@@ -47,76 +38,87 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const usuario = sesionData.session.user;
 
-        // Buscar el perfil asociado al usuario autenticado.
-        const { data: perfil, error: perfilError } = await supabaseClient
-            .from("perfiles")
-            .select("id, empresa_id, nombre, rol, activo")
-            .eq("id", usuario.id)
-            .maybeSingle();
+        // 2. Buscar perfil del usuario
+        const { data: perfil, error: perfilError } =
+            await supabaseClient
+                .from("perfiles")
+                .select("id, empresa_id, nombre, rol, activo")
+                .eq("id", usuario.id)
+                .maybeSingle();
 
         if (perfilError) {
-            throw perfilError;
+            throw new Error("Error al consultar el perfil: " + perfilError.message);
         }
 
         if (!perfil || !perfil.activo) {
-            mostrarMensaje(
-                "Tu cuenta no tiene un perfil activo. Contacta al administrador."
-            );
-
             await supabaseClient.auth.signOut();
+            mostrarError("No se encontró un perfil activo para este usuario.");
             return;
         }
 
-        // Mostrar el nombre del usuario, si el HTML tiene ese elemento.
+        // 3. Mostrar datos del usuario
         const nombreUsuario = document.getElementById("usuario-nombre");
-
-        if (nombreUsuario) {
-            nombreUsuario.textContent = perfil.nombre;
-        }
-
-        // Mostrar el rol, si existe el elemento.
         const rolUsuario = document.getElementById("usuario-rol");
+        const saludoNombre = document.getElementById("saludo-nombre");
+        const avatar = document.getElementById("usuario-avatar");
 
+        if (nombreUsuario) nombreUsuario.textContent = perfil.nombre;
+        if (saludoNombre) saludoNombre.textContent = perfil.nombre;
         if (rolUsuario) {
             rolUsuario.textContent =
-                perfil.rol === "administrador" ? "Administrador" : "Vendedor";
+                perfil.rol === "administrador" ? "Administrador" : perfil.rol;
+        }
+        if (avatar) {
+            avatar.textContent = (perfil.nombre || "U").charAt(0).toUpperCase();
         }
 
-        // Mostrar el nombre de la empresa.
-        if (perfil.empresa_id) {
-            const { data: empresa, error: empresaError } = await supabaseClient
-                .from("empresas")
-                .select("nombre")
-                .eq("id", perfil.empresa_id)
-                .maybeSingle();
+        // 4. Consultar empresa
+        const nombreEmpresa = document.getElementById("empresa-nombre");
+
+        if (!perfil.empresa_id) {
+            if (nombreEmpresa) nombreEmpresa.textContent = "Sin empresa asignada";
+        } else {
+            const { data: empresa, error: empresaError } =
+                await supabaseClient
+                    .from("empresas")
+                    .select("nombre")
+                    .eq("id", perfil.empresa_id)
+                    .maybeSingle();
 
             if (empresaError) {
-                throw empresaError;
+                throw new Error("Error al consultar la empresa: " + empresaError.message);
             }
 
-            const nombreEmpresa = document.getElementById("empresa-nombre");
+            if (!empresa) {
+                throw new Error(
+                    "No se encontró la empresa vinculada al perfil. Revisa los permisos RLS."
+                );
+            }
 
-            if (nombreEmpresa && empresa) {
+            if (nombreEmpresa) {
                 nombreEmpresa.textContent = empresa.nombre;
             }
         }
 
-        // Guardar el perfil en memoria para usarlo durante esta página.
-        window.cajaControlPerfil = perfil;
+        // 5. Mostrar fecha actual
+        const fecha = document.getElementById("fecha-actual");
 
-        // Avisar que el panel ya puede mostrar su contenido.
-        if (contenido) {
-            contenido.hidden = false;
+        if (fecha) {
+            fecha.textContent = new Intl.DateTimeFormat("es-BO", {
+                dateStyle: "long"
+            }).format(new Date());
         }
 
-        mostrarMensaje("Sesión verificada correctamente.", "exito");
+        // 6. Guardar perfil para otros módulos
+        window.cajaControlPerfil = perfil;
 
-        console.log("CajaControl: sesión verificada.", {
+        console.log("CajaControl: panel cargado correctamente.", {
             usuario: perfil.nombre,
+            empresa_id: perfil.empresa_id,
             rol: perfil.rol
         });
 
-        // Cerrar sesión.
+        // 7. Cerrar sesión
         const botonSalir = document.getElementById("cerrar-sesion");
 
         if (botonSalir) {
@@ -126,9 +128,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 const { error } = await supabaseClient.auth.signOut();
 
                 if (error) {
-                    mostrarMensaje("No se pudo cerrar la sesión.");
+                    mostrarError("No se pudo cerrar sesión: " + error.message);
                     botonSalir.disabled = false;
-                    console.error(error);
                     return;
                 }
 
@@ -138,10 +139,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     } catch (error) {
         console.error("Error al cargar CajaControl:", error);
-
-        mostrarMensaje(
-            "No se pudo cargar el panel. Comprueba la conexión e inténtalo nuevamente."
-        );
+        mostrarError(error.message || "No se pudo cargar el panel.");
     }
 });
 ```
