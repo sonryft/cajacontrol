@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const cliente = window.supabaseClient;
 
         if (!window.supabase || !cliente) {
-            mostrarMensaje("No se pudo conectar con el sistema. Recarga la página.");
+            mostrarMensaje("No se pudo conectar con Supabase. Recarga la página.");
             return;
         }
 
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error("No se pudo identificar al usuario.");
             }
 
-            mostrarMensaje("Verificando permisos de acceso...", "exito");
+            mostrarMensaje("Verificando tu perfil...", "exito");
 
             const { data: perfil, error: errorPerfil } = await cliente
                 .from("perfiles")
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!perfil || perfil.activo !== true) {
                 await cliente.auth.signOut();
-                throw new Error("Tu usuario no tiene un perfil activo. Contacta al administrador.");
+                throw new Error("Tu perfil no existe o está inactivo.");
             }
 
             if (!perfil.empresa_id) {
@@ -86,13 +86,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error("Tu usuario no tiene una empresa asignada.");
             }
 
-            mostrarMensaje("Acceso correcto. Abriendo CajaControl...", "exito");
+            mostrarMensaje("Acceso correcto. Abriendo el panel...", "exito");
 
-            window.location.replace(
-                "../02-dashboard/index.html"
-            );
+            window.location.replace("../02-dashboard/index.html");
 
         } catch (error) {
             console.error("Error de inicio de sesión:", error);
-            mostrarMensaje(
-                error.message ||
+            mostrarMensaje(error.message || "No se pudo iniciar sesión.");
+            botonLogin.disabled = false;
+            botonLogin.textContent = "Iniciar sesión";
+        }
+    });
+});
