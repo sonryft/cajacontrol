@@ -3,7 +3,7 @@
 ======================================== */
 
 const SUPABASE_URL = "https://fpsdnshhyosmqccdinsn.supabase.co";
-const SUPABASE_PUBLISHABLE_KEY = "PEGA_AQUI_TU_CLAVE_PUBLICA";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_BrcHw-AXiBBUxTW4E1Yz_g_B3CAF_ej";
 
 window.supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
