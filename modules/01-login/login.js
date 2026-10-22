@@ -55,40 +55,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (
             typeof window.supabase === "undefined" ||
-            typeof supabaseClient === "undefined"
+            typeof window.supabaseClient === "undefined"
         ) {
-            mostrarMensaje("No se pudo conectar con el sistema. Recarga la página.");
-            console.error("No se encontró la biblioteca o configuración de Supabase.");
+            mostrarMensaje(
+                "No se pudo conectar con el sistema. Recarga la página."
+            );
+
+            console.error(
+                "No se encontró la biblioteca de Supabase o su configuración."
+            );
+
             return;
         }
+
+        const cliente = window.supabaseClient;
 
         botonLogin.disabled = true;
         botonLogin.textContent = "Verificando...";
 
         try {
-            const { data, error } = await supabaseClient.auth.signInWithPassword({
+            const { data, error } = await cliente.auth.signInWithPassword({
                 email,
                 password
             });
 
             if (error) {
-                console.error("Error de autenticación:", error.message);
+                console.error("Error de autenticación:", error);
+
                 mostrarMensaje(
-                    "No se pudo iniciar sesión. Comprueba tus datos o contacta al administrador."
+                    "Error de inicio de sesión: " + error.message
                 );
+
                 return;
             }
 
             if (data.user) {
-                mostrarMensaje("Autenticación correcta. Preparando tu acceso...", "exito");
+                mostrarMensaje(
+                    "Autenticación correcta. Preparando tu acceso...",
+                    "exito"
+                );
 
-                // Todavía no redirigimos: primero configuraremos
-                // los perfiles, roles y permisos de CajaControl.
-                console.log("Sesión iniciada correctamente.");
+                console.log("Sesión iniciada correctamente.", data.user.id);
+            } else {
+                mostrarMensaje(
+                    "No se recibió información del usuario. Inténtalo nuevamente."
+                );
             }
+
         } catch (error) {
             console.error("Error inesperado:", error);
-            mostrarMensaje("Ocurrió un error de conexión. Inténtalo nuevamente.");
+
+            mostrarMensaje(
+                "Ocurrió un error de conexión. Inténtalo nuevamente."
+            );
+
         } finally {
             botonLogin.disabled = false;
             botonLogin.textContent = "Iniciar sesión";
