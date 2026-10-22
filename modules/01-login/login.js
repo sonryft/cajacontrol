@@ -10,14 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const botonMostrar = document.getElementById("toggle-password");
     const mensaje = document.getElementById("login-message");
 
-    if (
-        !formulario ||
-        !campoEmail ||
-        !campoPassword ||
-        !botonLogin ||
-        !botonMostrar ||
-        !mensaje
-    ) {
+    if (!formulario || !campoEmail || !campoPassword ||
+        !botonLogin || !botonMostrar || !mensaje) {
         console.error("CajaControl: faltan elementos del formulario.");
         return;
     }
@@ -32,15 +26,12 @@ document.addEventListener("DOMContentLoaded", () => {
         mensaje.className = "mensaje";
     }
 
-    // Mostrar u ocultar contraseña.
     botonMostrar.addEventListener("click", () => {
-        const estaOculta = campoPassword.type === "password";
-
-        campoPassword.type = estaOculta ? "text" : "password";
-        botonMostrar.textContent = estaOculta ? "Ocultar" : "Mostrar";
+        const mostrar = campoPassword.type === "password";
+        campoPassword.type = mostrar ? "text" : "password";
+        botonMostrar.textContent = mostrar ? "Ocultar" : "Mostrar";
     });
 
-    // Inicio de sesión.
     formulario.addEventListener("submit", async (evento) => {
         evento.preventDefault();
         ocultarMensaje();
@@ -53,22 +44,12 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        if (
-            typeof window.supabase === "undefined" ||
-            typeof window.supabaseClient === "undefined"
-        ) {
-            mostrarMensaje(
-                "No se pudo conectar con el sistema. Recarga la página."
-            );
+        const cliente = window.supabaseClient;
 
-            console.error(
-                "No se encontró la biblioteca de Supabase o su configuración."
-            );
-
+        if (!window.supabase || !cliente) {
+            mostrarMensaje("No se pudo conectar con el sistema. Recarga la página.");
             return;
         }
-
-        const cliente = window.supabaseClient;
 
         botonLogin.disabled = true;
         botonLogin.textContent = "Verificando...";
@@ -79,39 +60,39 @@ document.addEventListener("DOMContentLoaded", () => {
                 password
             });
 
-            if (error) {
-                console.error("Error de autenticación:", error);
+            if (error) throw error;
 
-                mostrarMensaje(
-                    "Error de inicio de sesión: " + error.message
-                );
-
-                return;
+            if (!data.user) {
+                throw new Error("No se pudo identificar al usuario.");
             }
 
-            if (data.user) {
-                mostrarMensaje(
-                    "Autenticación correcta. Preparando tu acceso...",
-                    "exito"
-                );
+            mostrarMensaje("Verificando permisos de acceso...", "exito");
 
-                console.log("Sesión iniciada correctamente.", data.user.id);
-            } else {
-                mostrarMensaje(
-                    "No se recibió información del usuario. Inténtalo nuevamente."
-                );
+            const { data: perfil, error: errorPerfil } = await cliente
+                .from("perfiles")
+                .select("id, empresa_id, nombre, rol, activo")
+                .eq("id", data.user.id)
+                .maybeSingle();
+
+            if (errorPerfil) throw errorPerfil;
+
+            if (!perfil || perfil.activo !== true) {
+                await cliente.auth.signOut();
+                throw new Error("Tu usuario no tiene un perfil activo. Contacta al administrador.");
             }
 
-        } catch (error) {
-            console.error("Error inesperado:", error);
+            if (!perfil.empresa_id) {
+                await cliente.auth.signOut();
+                throw new Error("Tu usuario no tiene una empresa asignada.");
+            }
 
-            mostrarMensaje(
-                "Ocurrió un error de conexión. Inténtalo nuevamente."
+            mostrarMensaje("Acceso correcto. Abriendo CajaControl...", "exito");
+
+            window.location.replace(
+                "../02-dashboard/index.html"
             );
 
-        } finally {
-            botonLogin.disabled = false;
-            botonLogin.textContent = "Iniciar sesión";
-        }
-    });
-});
+        } catch (error) {
+            console.error("Error de inicio de sesión:", error);
+            mostrarMensaje(
+                error.message ||
