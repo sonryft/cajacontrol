@@ -75,7 +75,7 @@
       <div class="sumrow"><span>Cantidad</span><strong id="previewQty">1</strong></div>
       <div class="sumrow"><span>Pago</span><strong id="previewPayment">Efectivo</strong></div>
       <div class="totalbox"><span>Total</span><strong id="previewTotal">Bs 0,00</strong></div>
-      <p class="help">Los productos y precios se leen del módulo Inventario. No se crean productos de ejemplo.</p>
+      <p class="help">Los productos y precios se leen del módulo Inventario. No se crean productos de ejemplo. Los módulos deben abrirse desde el mismo sitio web para compartir el almacenamiento local.</p>
     </section>
   </main>
 
@@ -298,8 +298,10 @@
       if (index < 0) throw new Error('El producto ya no existe en Inventario. Actualiza la página.');
       const product = freshProducts[index];
       const oldStock = getStock(product);
+      if (!Number.isFinite(oldStock) || oldStock < 0) throw new Error('El stock del producto no es válido.');
       if (oldStock < pSale.quantity) throw new Error(`Stock insuficiente. Disponible: ${oldStock}.`);
       const price = getPrice(product);
+      if (!Number.isFinite(price) || price < 0) throw new Error('El precio registrado en Inventario no es válido.');
       if (moneyNum(price) !== pSale.unitPrice) throw new Error('El precio cambió. Revisa la venta nuevamente.');
       const cash = cashData();
       if (!cash.current) throw new Error('La caja se cerró. Abre una caja antes de vender.');
@@ -312,7 +314,7 @@
       freshProducts[index] = {...product, stock:newStock, updatedAt:timestamp};
       const invMoves = read(KEYS.inventoryMoves, []);
       const inventoryMoves = Array.isArray(invMoves) ? invMoves : [];
-      inventoryMoves.push({
+      inventoryMoves.unshift({
         id: saleId, timestamp, productId:pSale.productId, code:product.code || '',
         name:getName(product), type:'salida', qty:pSale.quantity,
         note:`Venta ${saleNumber}${pSale.note ? ' · ' + pSale.note : ''}`,
@@ -337,7 +339,8 @@
         saleId, saleNumber
       });
 
-      // Persist the four linked records; roll back all keys if any write fails.
+      // Persist linked records. If any write fails, catch() restores all four original keys.
+      // Write the sale log and inventory/cash state from the same validated snapshot.
       write(KEYS.products, freshProducts);
       write(KEYS.inventoryMoves, inventoryMoves);
       write(KEYS.cash, cash);
@@ -363,7 +366,7 @@
           else localStorage.setItem(key, before[key]);
         } catch {}
       }
-      showToast(error.message || 'No se pudo registrar la venta. No se guardaron los cambios.', true);
+      showToast((error.message || 'No se pudo registrar la venta.') + ' Se intentó restaurar los datos anteriores.', true);
       loadProducts();
       renderCashStatus();
     } finally {
