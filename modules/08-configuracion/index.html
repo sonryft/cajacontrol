@@ -1,0 +1,176 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#08090c">
+    <title>Configuración | CajaControl</title>
+    <link rel="stylesheet" href="configuracion.css">
+</head>
+<body>
+    <div class="app">
+        <aside class="sidebar">
+            <a class="brand" href="../02-dashboard/index.html">
+                <span class="brand-icon">C</span>
+                <span>CajaControl</span>
+            </a>
+
+            <div class="business">
+                <span class="business-label">EMPRESA ACTIVA</span>
+                <strong id="empresa-nombre">Cargando empresa...</strong>
+                <span class="status">
+                    <span class="status-dot"></span>
+                    Sistema conectado
+                </span>
+            </div>
+
+            <nav class="navigation" aria-label="Navegación principal">
+                <span class="nav-heading">GENERAL</span>
+
+                <a class="nav-link" href="../02-dashboard/index.html">
+                    <span class="nav-icon">◫</span>
+                    <span>Resumen</span>
+                </a>
+
+                <a class="nav-link" href="../03-ventas/index.html">
+                    <span class="nav-icon">▤</span>
+                    <span>Ventas</span>
+                </a>
+
+                <a class="nav-link" href="../04-caja/index.html">
+                    <span class="nav-icon">▣</span>
+                    <span>Caja y arqueos</span>
+                </a>
+
+                <a class="nav-link" href="../05-inventario/index.html">
+                    <span class="nav-icon">▦</span>
+                    <span>Inventario</span>
+                </a>
+
+                <a class="nav-link" href="../06-reportes/index.html">
+                    <span class="nav-icon">▥</span>
+                    <span>Reportes</span>
+                </a>
+
+                <span class="nav-heading nav-heading-secondary">
+                    ADMINISTRACIÓN
+                </span>
+
+                <a class="nav-link" href="../07-usuarios/index.html">
+                    <span class="nav-icon">♙</span>
+                    <span>Usuarios</span>
+                </a>
+
+                <a class="nav-link active" href="./index.html">
+                    <span class="nav-icon">⚙</span>
+                    <span>Configuración</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="avatar" id="usuario-avatar">A</div>
+                <div class="user-info">
+                    <strong id="usuario-nombre">Usuario</strong>
+                    <span id="usuario-rol">Rol</span>
+                </div>
+                <button id="cerrar-sesion" class="logout-button"
+                    type="button" aria-label="Cerrar sesión"
+                    title="Cerrar sesión">↗</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div>
+                    <span class="eyebrow">PREFERENCIAS DEL SISTEMA</span>
+                    <h1>Configuración</h1>
+                </div>
+                <span class="today" id="fecha-actual"></span>
+            </header>
+
+            <section class="intro">
+                <span class="welcome-label">PERSONALIZA TU ESPACIO</span>
+                <h2>Tu CajaControl, a tu manera.</h2>
+                <p>Elige los colores que prefieras para la interfaz.</p>
+            </section>
+
+            <section class="section">
+                <div class="section-heading">
+                    <div>
+                        <h2>Apariencia</h2>
+                        <p>Selecciona una paleta de colores.</p>
+                    </div>
+                </div>
+
+                <div class="themes-grid">
+                    <button class="theme-card" data-theme="tierra" type="button">
+                        <span class="swatches tierra">
+                            <i></i><i></i><i></i><i></i>
+                        </span>
+                        <strong>Tierra</strong>
+                        <span>Marrón, beige y marfil</span>
+                    </button>
+
+                    <button class="theme-card" data-theme="carbon" type="button">
+                        <span class="swatches carbon">
+                            <i></i><i></i><i></i><i></i>
+                        </span>
+                        <strong>Carbón</strong>
+                        <span>Negro y grises</span>
+                    </button>
+
+                    <button class="theme-card" data-theme="rosa" type="button">
+                        <span class="swatches rosa">
+                            <i></i><i></i><i></i><i></i>
+                        </span>
+                        <strong>Rosa</strong>
+                        <span>Rosa empolvado y marfil</span>
+                    </button>
+
+                    <button class="theme-card" data-theme="bosque" type="button">
+                        <span class="swatches bosque">
+                            <i></i><i></i><i></i><i></i>
+                        </span>
+                        <strong>Bosque</strong>
+                        <span>Verde bosque y salvia</span>
+                    </button>
+
+                    <button class="theme-card" data-theme="oceano" type="button">
+                        <span class="swatches oceano">
+                            <i></i><i></i><i></i><i></i>
+                        </span>
+                        <strong>Océano</strong>
+                        <span>Azul marino y azul claro</span>
+                    </button>
+
+                    <button class="theme-card" data-theme="nieve" type="button">
+                        <span class="swatches nieve">
+                            <i></i><i></i><i></i><i></i>
+                        </span>
+                        <strong>Nieve</strong>
+                        <span>Blanco y grises claros</span>
+                    </button>
+                </div>
+
+                <p id="estado-tema" class="notice" role="status">
+                    La selección se guardará en este navegador.
+                </p>
+            </section>
+
+            <div id="configuracion-message" class="mensaje"
+                role="status" aria-live="polite"></div>
+
+            <footer class="page-footer">
+                <span>CajaControl</span>
+                <span>Configuración del sistema</span>
+            </footer>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../01-login/supabase.js"></script>
+    <script src="configuracion.js"></script>
+</body>
+</html>
+```
