@@ -292,7 +292,25 @@
     }
 
     function getItemProductId(item) {
-        return String(item?.productId ?? item?.product?.id ?? item?.idProducto ?? "");
+        return String(item?.productId ?? item?.product?.id ?? item?.idProducto ?? item?.id ?? "");
+    }
+
+    function findProductForItem(item, productById, products) {
+        const id = getItemProductId(item);
+        if (id && productById.has(id)) return productById.get(id);
+
+        const code = getItemCode(item).trim().toLocaleLowerCase();
+        if (code) {
+            const byCode = products.find(product => getProductCode(product).trim().toLocaleLowerCase() === code);
+            if (byCode) return byCode;
+        }
+
+        const name = getItemName(item).trim().toLocaleLowerCase();
+        if (name) {
+            const byName = products.find(product => getProductName(product).trim().toLocaleLowerCase() === name);
+            if (byName) return byName;
+        }
+        return null;
     }
 
     function getItemName(item) {
@@ -304,7 +322,7 @@
     }
 
     function getItemPrice(item) {
-        return number(item?.price ?? item?.unitPrice ?? item?.precio ?? item?.salePrice);
+        return number(item?.price ?? item?.unitPrice ?? item?.precio ?? item?.salePrice ?? item?.precioVenta ?? item?.precio_venta);
     }
 
     function getSaleTotal(sale, items) {
@@ -393,8 +411,8 @@
             entry.items.forEach(item => {
                 const qty = getItemQty(item);
                 const id = getItemProductId(item);
-                const product = productById.get(id);
-                const storedCost = item?.cost ?? item?.unitCost ?? item?.purchasePrice ?? item?.precioCompra ?? item?.precio_compra;
+                const product = findProductForItem(item, productById, products);
+                const storedCost = item?.cost ?? item?.unitCost ?? item?.purchasePrice ?? item?.precioCompra ?? item?.precio_compra ?? item?.product?.cost;
 
                 // Prefer a historical cost saved on the sale item.
                 // If absent, use the current inventory cost only as an estimate.
@@ -502,7 +520,7 @@
         $("dataNotice").textContent = problems.length
             ? problems.join(" ")
             : "Lectura completada. " + (allSales.length ? "Se encontraron ventas dentro del período." : "No se encontraron ventas dentro del período.");
-        $("dataStatus").textContent = present.join(" · ") + (costKnown ? " · costo de venta calculable" : " · costo histórico incompleto");
+        $("dataStatus").textContent = present.join(" · ") + (costKnown ? " · costo de venta calculable" : " · faltan costos o no se pudieron relacionar algunos productos vendidos con el inventario");
     }
 
     function exportCSV() {
