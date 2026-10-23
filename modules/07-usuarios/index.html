@@ -4,110 +4,129 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Usuarios | CajaControl</title>
+<link rel="icon" type="image/png" href="../../favicon.png">
 <style>
 :root{--bg:#08090c;--surface:#11141b;--surface2:#171b24;--border:rgba(255,255,255,.09);--text:#f4f5f7;--muted:#9298a6;--accent:#b7f36b;--accentDark:#26391b;--danger:#ff7777;--warning:#f5c86a}
-*{box-sizing:border-box;margin:0;padding:0}
-body{min-height:100vh;padding:28px;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.container{max-width:1120px;margin:auto}
-header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--border)}
-.eyebrow{color:var(--muted);font-size:11px;letter-spacing:2px}h1{margin-top:7px;font-size:30px}
-.actions{display:flex;gap:9px;flex-wrap:wrap}
-.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 15px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:10px;text-decoration:none;cursor:pointer;font:inherit;font-size:13px}
-.btn.primary{background:var(--accent);color:#10150b;font-weight:750;border-color:transparent}
-.btn.danger{color:var(--danger)}.btn:disabled{opacity:.45;cursor:not-allowed}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}
-.stat,.panel{background:var(--surface);border:1px solid var(--border);border-radius:16px}
-.stat{padding:17px}.label{color:var(--muted);font-size:12px}.value{margin-top:8px;font-size:25px;font-weight:750}.note{margin-top:5px;color:var(--muted);font-size:11px}
-.panel{margin-top:18px;padding:21px}.panelhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:17px}
-h2{font-size:17px}.sub{color:var(--muted);font-size:12px;line-height:1.6;margin-top:5px}
-.formgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
-.field{display:flex;flex-direction:column;gap:7px}.field.wide{grid-column:span 2}
-label{font-size:12px;color:var(--muted)}
-input,select{width:100%;padding:11px 12px;background:#0b0d12;color:var(--text);border:1px solid var(--border);border-radius:10px;font:inherit;font-size:13px;outline:none}
-input:focus,select:focus{border-color:var(--accent)}
-.checks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:15px}
-.check{display:flex;gap:9px;align-items:flex-start;padding:12px;background:#0d1015;border:1px solid var(--border);border-radius:10px}
-.check input{width:auto;margin-top:2px;accent-color:var(--accent)}.check span{font-size:13px}.check small{display:block;color:var(--muted);font-size:11px;margin-top:3px;line-height:1.4}
-.formactions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:16px}
-.toolbar{display:grid;grid-template-columns:1fr 190px;gap:10px;margin-bottom:14px}
-.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:740px}
-th,td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle}
-th{color:var(--muted);font-weight:500;white-space:nowrap}
-.badge{display:inline-block;padding:5px 8px;border-radius:7px;background:var(--accentDark);color:var(--accent);font-size:11px}
-.badge.admin{background:rgba(183,243,107,.12)}.badge.vendor{background:rgba(146,152,166,.15);color:#c4cad3}.badge.off{background:rgba(255,119,119,.12);color:var(--danger)}
-.rowactions{display:flex;gap:6px}.small{padding:7px 9px;font-size:11px}
-.notice{margin-top:15px;padding:13px 14px;background:rgba(245,200,106,.1);border:1px solid rgba(245,200,106,.22);border-radius:11px;color:var(--warning);font-size:12px;line-height:1.65}
-.empty{padding:25px;text-align:center;color:var(--muted);font-size:13px}
-.hidden{display:none!important}
-.toast{position:fixed;right:20px;bottom:20px;max-width:360px;padding:14px 17px;background:#202631;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 40px #0008;font-size:13px;line-height:1.5;display:none;z-index:10}
-@media(max-width:760px){body{padding:16px}h1{font-size:26px}.stats{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr 1fr}.field.wide{grid-column:span 2}.checks{grid-template-columns:1fr}.panel{padding:16px}.toolbar{grid-template-columns:1fr}}
-@media(max-width:460px){.stats{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.field.wide{grid-column:auto}.actions{width:100%}.actions .btn{flex:1}}
+*{box-sizing:border-box;margin:0;padding:0}body{min-height:100vh;padding:28px;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.container{max-width:1120px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--border)}.eyebrow{color:var(--muted);font-size:11px;letter-spacing:2px}h1{margin-top:7px;font-size:30px}.actions{display:flex;gap:9px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;justify-content:center;padding:11px 15px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:10px;text-decoration:none;cursor:pointer;font:inherit;font-size:13px}.btn.primary{background:var(--accent);color:#10150b;font-weight:750;border-color:transparent}.btn:disabled{opacity:.45;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:22px}.stat,.panel{background:var(--surface);border:1px solid var(--border);border-radius:16px}.stat{padding:17px}.label{color:var(--muted);font-size:12px}.value{margin-top:8px;font-size:25px;font-weight:750}.note{margin-top:5px;color:var(--muted);font-size:11px}.panel{margin-top:18px;padding:21px}.panelhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:17px}h2{font-size:17px}.sub{color:var(--muted);font-size:12px;line-height:1.6;margin-top:5px}
+.toolbar{display:grid;grid-template-columns:1fr 190px;gap:10px;margin-bottom:14px}input,select{width:100%;padding:11px 12px;background:#0b0d12;color:var(--text);border:1px solid var(--border);border-radius:10px;font:inherit;font-size:13px;outline:none}input:focus,select:focus{border-color:var(--accent)}
+.tablewrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:740px}th,td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle}th{color:var(--muted);font-weight:500;white-space:nowrap}.badge{display:inline-block;padding:5px 8px;border-radius:7px;background:var(--accentDark);color:var(--accent);font-size:11px}.badge.admin{background:rgba(183,243,107,.12)}.badge.vendor{background:rgba(146,152,166,.15);color:#c4cad3}.badge.off{background:rgba(255,119,119,.12);color:var(--danger)}.rowactions{display:flex;gap:6px}.small{padding:7px 9px;font-size:11px}
+.notice{margin-top:15px;padding:13px 14px;background:rgba(245,200,106,.1);border:1px solid rgba(245,200,106,.22);border-radius:11px;color:var(--warning);font-size:12px;line-height:1.65}.empty{padding:25px;text-align:center;color:var(--muted);font-size:13px}.hidden{display:none!important}.toast{position:fixed;right:20px;bottom:20px;max-width:440px;padding:14px 17px;background:#202631;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 40px #0008;font-size:13px;line-height:1.5;display:none;z-index:10}
+@media(max-width:760px){body{padding:16px}h1{font-size:26px}.stats{grid-template-columns:1fr 1fr}.panel{padding:16px}.toolbar{grid-template-columns:1fr}}@media(max-width:460px){.stats{grid-template-columns:1fr}.actions{width:100%}.actions .btn{flex:1}}
 </style>
 </head>
 <body>
 <main class="container">
 <header>
- <div><div class="eyebrow">CAJACONTROL / ADMINISTRACIÓN</div><h1>Usuarios y permisos</h1><p class="sub">Organiza quién administra el negocio y quién registra ventas.</p></div>
- <div class="actions"><a class="btn" href="../02-dashboard/index.html">← Dashboard</a><button class="btn primary" id="newBtn" type="button">＋ Nuevo usuario</button></div>
+ <div><div class="eyebrow">CAJACONTROL / ADMINISTRACIÓN</div><h1>Usuarios y permisos</h1><p class="sub">Usuarios registrados en la base de datos de la empresa.</p></div>
+ <div class="actions"><a class="btn" href="../02-dashboard/index.html">← Dashboard</a><button class="btn primary" id="refreshBtn" type="button">↻ Actualizar</button></div>
 </header>
 <section class="stats">
- <article class="stat"><div class="label">Usuarios registrados</div><div class="value" id="countAll">0</div><div class="note">Cuentas en este navegador</div></article>
- <article class="stat"><div class="label">Administradores</div><div class="value" id="countAdmins">0</div><div class="note">Acceso administrativo previsto</div></article>
- <article class="stat"><div class="label">Vendedores activos</div><div class="value" id="countVendors">0</div><div class="note">Acceso operativo previsto</div></article>
-</section>
-<section class="panel hidden" id="formPanel">
- <div class="panelhead"><div><h2 id="formTitle">Crear usuario</h2><p class="sub">Registra los datos y asigna un rol. No guardes contraseñas reales en este prototipo.</p></div></div>
- <form id="userForm">
-  <input type="hidden" id="editId">
-  <div class="formgrid">
-   <div class="field"><label for="fullName">Nombre completo *</label><input id="fullName" maxlength="100" required placeholder="Ej. Ana Pérez"></div>
-   <div class="field"><label for="username">Usuario / correo de referencia *</label><input id="username" maxlength="140" required placeholder="ana@negocio.com"></div>
-   <div class="field"><label for="role">Rol *</label><select id="role" required><option value="vendedor">Vendedor</option><option value="admin">Administrador</option></select></div>
-   <div class="field"><label for="status">Estado *</label><select id="status" required><option value="activo">Activo</option><option value="inactivo">Inactivo</option></select></div>
-  </div>
-  <div class="sub" style="margin-top:18px">Permisos del usuario</div>
-  <div class="checks">
-   <label class="check"><input type="checkbox" id="permSales"><span>Registrar ventas<small>Crear ventas y consultar la operación de ventas.</small></span></label>
-   <label class="check"><input type="checkbox" id="permInventory"><span>Gestionar inventario<small>Crear y editar productos y existencias.</small></span></label>
-   <label class="check"><input type="checkbox" id="permCost"><span>Ver costos de compra<small>Consultar el costo unitario de los productos.</small></span></label>
-   <label class="check"><input type="checkbox" id="permReports"><span>Ver reportes financieros<small>Consultar costos, ganancias y resumen financiero.</small></span></label>
-   <label class="check"><input type="checkbox" id="permCash"><span>Administrar caja<small>Abrir, cerrar y registrar movimientos de caja.</small></span></label>
-   <label class="check"><input type="checkbox" id="permUsers"><span>Administrar usuarios<small>Crear usuarios y asignar permisos.</small></span></label>
-  </div>
-  <div class="formactions"><button class="btn" id="cancelBtn" type="button">Cancelar</button><button class="btn primary" type="submit">Guardar usuario</button></div>
- </form>
+ <article class="stat"><div class="label">Perfiles registrados</div><div class="value" id="countAll">—</div><div class="note">Perfiles de esta empresa</div></article>
+ <article class="stat"><div class="label">Administradores</div><div class="value" id="countAdmins">—</div><div class="note">Perfiles activos con rol administrador</div></article>
+ <article class="stat"><div class="label">Vendedores activos</div><div class="value" id="countVendors">—</div><div class="note">Perfiles activos con rol vendedor</div></article>
 </section>
 <section class="panel">
- <div class="panelhead"><div><h2>Directorio de usuarios</h2><p class="sub">Edita roles, permisos y estado de cada usuario.</p></div></div>
- <div class="toolbar"><input id="search" type="search" placeholder="Buscar por nombre o usuario…"><select id="roleFilter"><option value="">Todos los roles</option><option value="admin">Administradores</option><option value="vendedor">Vendedores</option></select></div>
- <div class="tablewrap"><table><thead><tr><th>Nombre</th><th>Usuario</th><th>Rol</th><th>Estado</th><th>Permisos principales</th><th>Acciones</th></tr></thead><tbody id="usersBody"></tbody></table></div>
- <div class="empty hidden" id="empty">No hay usuarios que coincidan con la búsqueda.</div>
- <div class="notice"><strong>Importante:</strong> esta pantalla es un prototipo de administración local. Los registros se guardan en el navegador con localStorage; todavía no crea cuentas de acceso reales ni protege los módulos. Antes de entregar CajaControl a vendedores, conectaremos autenticación y permisos en una base de datos/servidor. Ocultar campos en pantalla por sí solo no protege los costos.</div>
+ <div class="panelhead"><div><h2>Directorio de usuarios</h2><p class="sub" id="companyLabel">Cargando empresa…</p></div></div>
+ <div class="toolbar"><input id="search" type="search" placeholder="Buscar por nombre o ID…"><select id="roleFilter"><option value="">Todos los roles</option><option value="administrador">Administradores</option><option value="vendedor">Vendedores</option><option value="encargado">Encargados</option></select></div>
+ <div class="tablewrap"><table><thead><tr><th>Nombre</th><th>ID de usuario</th><th>Rol</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="usersBody"></tbody></table></div>
+ <div class="empty hidden" id="empty">No hay perfiles que coincidan con la búsqueda.</div>
+ <div id="message" class="notice">Conectando con Supabase…</div>
 </section>
 </main>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../01-login/supabase.js"></script>
 <script>
 (()=> {
 'use strict';
-const KEY='cajacontrol_usuarios';
 const $=id=>document.getElementById(id);
-let users=[],timer;
-const defaultPerms={sales:true,inventory:false,cost:false,reports:false,cash:false,users:false};
-const read=()=>{try{const v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[]}catch{return []}};
-const save=()=>localStorage.setItem(KEY,JSON.stringify(users));
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function toast(msg){$('toast').textContent=msg;$('toast').style.display='block';clearTimeout(timer);timer=setTimeout(()=>$('toast').style.display='none',3500)}
-function permsForRole(role){return role==='admin'?{sales:true,inventory:true,cost:true,reports:true,cash:true,users:true}:{...defaultPerms}}
-function setPerms(p={}){['sales','inventory','cost','reports','cash','users'].forEach(k=>$('perm'+k[0].toUpperCase()+k.slice(1)).checked=!!p[k])}
-function getPerms(){return {sales:$('permSales').checked,inventory:$('permInventory').checked,cost:$('permCost').checked,reports:$('permReports').checked,cash:$('permCash').checked,users:$('permUsers').checked}}
-function roleChanged(){setPerms(permsForRole($('role').value))}
-function resetForm(){ $('userForm').reset();$('editId').value='';$('role').value='vendedor';$('status').value='activo';setPerms(permsForRole('vendedor'));$('formTitle').textContent='Crear usuario';$('formPanel').classList.add('hidden')}
-function openForm(user=null){resetForm();if(user){$('editId').value=user.id;$('fullName').value=user.name;$('username').value=user.username;$('role').value=user.role;$('status').value=user.status;setPerms(user.permissions||permsForRole(user.role));$('formTitle').textContent='Editar usuario'}else{roleChanged()}$('formPanel').classList.remove('hidden');$('formPanel').scrollIntoView({behavior:'smooth',block:'start'});$('fullName').focus()}
-function render(){const q=$('search').value.trim().toLocaleLowerCase('es'),rf=$('roleFilter').value;const list=users.filter(u=>(!q||(u.name+' '+u.username).toLocaleLowerCase('es').includes(q))&&(!rf||u.role===rf));$('countAll').textContent=users.length;$('countAdmins').textContent=users.filter(u=>u.role==='admin'&&u.status==='activo').length;$('countVendors').textContent=users.filter(u=>u.role==='vendedor'&&u.status==='activo').length;$('usersBody').innerHTML=list.map(u=>{const p=u.permissions||permsForRole(u.role),tags=[];if(p.sales)tags.push('Ventas');if(p.inventory)tags.push('Inventario');if(p.cost)tags.push('Costos');if(p.reports)tags.push('Reportes');if(p.cash)tags.push('Caja');if(p.users)tags.push('Usuarios');return `<tr><td><strong>${esc(u.name)}</strong></td><td>${esc(u.username)}</td><td><span class="badge ${u.role==='admin'?'admin':'vendor'}">${u.role==='admin'?'Administrador':'Vendedor'}</span></td><td><span class="badge ${u.status==='activo'?'':'off'}">${u.status==='activo'?'Activo':'Inactivo'}</span></td><td>${esc(tags.join(', ')||'Sin permisos')}</td><td><div class="rowactions"><button class="btn small" type="button" data-edit="${esc(u.id)}">Editar</button><button class="btn small danger" type="button" data-delete="${esc(u.id)}">Eliminar</button></div></td></tr>`}).join('');$('empty').classList.toggle('hidden',list.length>0);$('usersBody').querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>openForm(users.find(u=>u.id===b.dataset.edit))));$('usersBody').querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',()=>removeUser(b.dataset.delete)))}
-function removeUser(id){const u=users.find(x=>x.id===id);if(!u)return;if(!confirm(`¿Eliminar el registro de "${u.name}"?`))return;users=users.filter(x=>x.id!==id);try{save();render();toast('Registro eliminado.')}catch{toast('No se pudo guardar el cambio.')}}
-$('newBtn').addEventListener('click',()=>openForm());$('cancelBtn').addEventListener('click',resetForm);$('role').addEventListener('change',roleChanged);$('search').addEventListener('input',render);$('roleFilter').addEventListener('change',render);
-$('userForm').addEventListener('submit',e=>{e.preventDefault();const id=$('editId').value,name=$('fullName').value.trim(),username=$('username').value.trim(),role=$('role').value,status=$('status').value;if(!name||!username){toast('Completa el nombre y el usuario.');return}if(users.some(u=>u.username.toLocaleLowerCase()===username.toLocaleLowerCase()&&u.id!==id)){toast('Ya existe un registro con ese usuario.');return}const old=users.find(u=>u.id===id);const user={id:id||'U-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),name,username,role,status,permissions:getPerms(),createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};try{if(old)users=users.map(u=>u.id===id?user:u);else users.unshift(user);save();resetForm();render();toast(old?'Usuario actualizado.':'Usuario registrado.')}catch{toast('No se pudo guardar. Comprueba el almacenamiento del navegador.')}});
-users=read();render();setPerms(permsForRole('vendedor'));
+let profiles=[], currentProfile=null, companyId=null, toastTimer;
+function toast(msg){$('toast').textContent=msg;$('toast').style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('toast').style.display='none',4500)}
+function message(msg){$('message').textContent=msg}
+function roleLabel(role){const r=String(role||'').toLowerCase();if(r==='administrador'||r==='admin')return 'Administrador';if(r==='vendedor')return 'Vendedor';if(r==='encargado')return 'Encargado';return role||'Sin rol'}
+function normalizedRole(role){const r=String(role||'').toLowerCase();return r==='admin'?'administrador':r}
+function render(){
+ const q=$('search').value.trim().toLocaleLowerCase('es'),rf=$('roleFilter').value;
+ const list=profiles.filter(p=>(!q||(`${p.nombre||''} ${p.id||''}`).toLocaleLowerCase('es').includes(q))&&(!rf||normalizedRole(p.rol)===rf));
+ $('countAll').textContent=profiles.length;
+ $('countAdmins').textContent=profiles.filter(p=>normalizedRole(p.rol)==='administrador'&&p.activo===true).length;
+ $('countVendors').textContent=profiles.filter(p=>normalizedRole(p.rol)==='vendedor'&&p.activo===true).length;
+ $('usersBody').innerHTML=list.map(p=>{
+  const admin=normalizedRole(p.rol)==='administrador',active=p.activo===true;
+  const id=String(p.id||'');
+  const shortId=id.length>20?id.slice(0,8)+'…'+id.slice(-6):id;
+  const canEdit=currentProfile&&currentProfile.id===p.id;
+  return `<tr><td><strong>${escapeHtml(p.nombre||'Usuario sin nombre')}</strong></td><td title="${escapeHtml(id)}">${escapeHtml(shortId)}</td><td><span class="badge ${admin?'admin':'vendor'}">${escapeHtml(roleLabel(p.rol))}</span></td><td><span class="badge ${active?'':'off'}">${active?'Activo':'Inactivo'}</span></td><td><div class="rowactions"><button class="btn small" type="button" data-toggle="${escapeHtml(id)}" data-active="${active?'true':'false'}" ${canEdit?'disabled title="No puedes cambiar tu propio estado desde esta pantalla"':''}>${active?'Desactivar':'Activar'}</button><button class="btn small" type="button" data-role="${escapeHtml(id)}" ${canEdit?'disabled title="No puedes cambiar tu propio rol desde esta pantalla"':''}>Cambiar rol</button></div></td></tr>`;
+ }).join('');
+ $('empty').classList.toggle('hidden',list.length>0);
+ $('usersBody').querySelectorAll('[data-toggle]').forEach(b=>b.addEventListener('click',()=>changeActive(b.dataset.toggle,b.dataset.active!=='true')));
+ $('usersBody').querySelectorAll('[data-role]').forEach(b=>b.addEventListener('click',()=>changeRole(b.dataset.role)));
+}
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+async function load(){
+ const client=window.supabaseClient;
+ if(!client){message('No se pudo inicializar Supabase. Comprueba que supabase.js se carga antes que este módulo.');return}
+ $('refreshBtn').disabled=true;
+ try{
+  const {data:sessionData,error:sessionError}=await client.auth.getSession();
+  if(sessionError)throw sessionError;
+  const session=sessionData?.session;
+  if(!session){window.location.replace('../01-login/index.html');return}
+  const {data:me,error:profileError}=await client.from('perfiles').select('id,empresa_id,nombre,rol,activo').eq('id',session.user.id).maybeSingle();
+  if(profileError)throw new Error('No se pudo consultar tu perfil: '+profileError.message);
+  if(!me)throw new Error('Tu usuario no tiene un perfil en la tabla perfiles.');
+  if(me.activo!==true)throw new Error('Tu perfil está inactivo. Contacta al administrador.');
+  currentProfile=me;companyId=me.empresa_id;
+  if(!companyId)throw new Error('Tu perfil no tiene empresa_id asignado.');
+  const {data:company,error:companyError}=await client.from('empresas').select('id,nombre').eq('id',companyId).maybeSingle();
+  if(companyError)throw new Error('No se pudo consultar la empresa: '+companyError.message);
+  $('companyLabel').textContent='Empresa: '+(company?.nombre||'Empresa no disponible');
+  const {data,error}=await client.from('perfiles').select('id,empresa_id,nombre,rol,activo,creado_en').eq('empresa_id',companyId).order('creado_en',{ascending:true});
+  if(error)throw new Error('No se pudieron cargar los usuarios: '+error.message);
+  profiles=data||[];render();
+  message('Datos cargados desde Supabase. Los cambios de rol y estado dependen de las políticas RLS configuradas en la base de datos. Para crear cuentas reales se necesita un flujo seguro de invitación/autenticación; esta pantalla no almacena contraseñas.');
+ }catch(e){
+  console.error('CajaControl usuarios:',e);
+  message(e.message||'No se pudo cargar el directorio.');toast(e.message||'Error de conexión');
+ }finally{$('refreshBtn').disabled=false}
+}
+async function changeActive(id,active){
+ if(id===currentProfile?.id){toast('No puedes cambiar tu propio estado aquí.');return}
+ if(!confirm(`¿${active?'Activar':'Desactivar'} este perfil?`))return;
+ const client=window.supabaseClient;
+ try{
+  const {data,error}=await client.from('perfiles').update({activo:active}).eq('id',id).eq('empresa_id',companyId).select('id,activo').maybeSingle();
+  if(error)throw error;
+  if(!data)throw new Error('No se actualizó ningún registro. Comprueba las políticas RLS de perfiles.');
+  toast('Estado actualizado en Supabase.');await load();
+ }catch(e){console.error(e);toast('No se pudo actualizar: '+(e.message||'revisa las políticas RLS'))}
+}
+async function changeRole(id){
+ if(id===currentProfile?.id){toast('No puedes cambiar tu propio rol aquí.');return}
+ const target=profiles.find(p=>p.id===id);if(!target)return;
+ const current=normalizedRole(target.rol);
+ const options=['administrador','encargado','vendedor'];
+ const next=prompt('Escribe el nuevo rol: administrador, encargado o vendedor',current);
+ if(next===null)return;
+ const role=next.trim().toLowerCase();
+ if(!options.includes(role)){toast('Rol no válido. Usa administrador, encargado o vendedor.');return}
+ if(role==='administrador'&&profiles.filter(p=>normalizedRole(p.rol)==='administrador'&&p.activo===true&&p.id!==id).length===0){
+  if(!confirm('Este cambio podría dejar la empresa sin otro administrador activo. ¿Continuar?'))return;
+ }
+ try{
+  const {data,error}=await window.supabaseClient.from('perfiles').update({rol:role}).eq('id',id).eq('empresa_id',companyId).select('id,rol').maybeSingle();
+  if(error)throw error;
+  if(!data)throw new Error('No se actualizó ningún registro. Comprueba las políticas RLS de perfiles.');
+  toast('Rol actualizado en Supabase.');await load();
+ }catch(e){console.error(e);toast('No se pudo cambiar el rol: '+(e.message||'revisa las políticas RLS'))}
+}
+$('refreshBtn').addEventListener('click',load);
+$('search').addEventListener('input',render);
+$('roleFilter').addEventListener('change',render);
+load();
 })();
 </script>
 </body>
