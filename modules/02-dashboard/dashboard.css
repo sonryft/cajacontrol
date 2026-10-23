@@ -1,11 +1,10 @@
-```css
 /* =========================================
    CAJACONTROL — PANEL DE ADMINISTRACIÓN
    Diseño oscuro, minimalista y adaptable
 ========================================= */
 
 :root {
-    color-scheme: dark;
+    color-scheme: light dark;
     --background: #08090c;
     --sidebar: #0d0f14;
     --surface: #11141b;
@@ -144,7 +143,7 @@ button {
 
 .nav-heading {
     margin: 0 10px 9px;
-    color: #777e8b;
+    color: var(--muted);
     font-size: 10px;
     font-weight: 750;
     letter-spacing: 1.3px;
@@ -160,7 +159,7 @@ button {
     gap: 12px;
     min-height: 43px;
     padding: 0 12px;
-    color: #a7adba;
+    color: var(--muted);
     border: 1px solid transparent;
     border-radius: 11px;
     font-size: 12px;
@@ -298,7 +297,7 @@ button {
     align-items: center;
     gap: 8px;
     padding: 9px 12px;
-    color: #d9eac8;
+    color: var(--text);
     background: rgba(183, 243, 107, 0.055);
     border: 1px solid rgba(183, 243, 107, 0.12);
     border-radius: 30px;
@@ -317,13 +316,7 @@ button {
     margin-top: 30px;
     padding: 32px;
     overflow: hidden;
-    background:
-        radial-gradient(
-            ellipse at 88% 15%,
-            rgba(183, 243, 107, 0.10),
-            transparent 43%
-        ),
-        linear-gradient(115deg, #151a20, #101219);
+    background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 22px;
 }
@@ -411,7 +404,7 @@ button {
 
 .metric-card:hover {
     background: var(--surface-hover);
-    border-color: rgba(255, 255, 255, 0.13);
+    border-color: var(--border);
     transform: translateY(-2px);
 }
 
@@ -431,7 +424,7 @@ button {
 
 .metric-note {
     margin-top: 9px;
-    color: #777e8b;
+    color: var(--muted);
     font-size: 10px;
 }
 
@@ -466,7 +459,7 @@ button {
 
 .quick-card:hover {
     background: var(--surface-hover);
-    border-color: rgba(183, 243, 107, 0.25);
+    border-color: var(--accent);
     transform: translateY(-3px);
 }
 
@@ -503,7 +496,7 @@ button {
     gap: 15px;
     margin-top: 38px;
     padding-top: 20px;
-    color: #777e8b;
+    color: var(--muted);
     border-top: 1px solid var(--border);
     font-size: 10px;
 }
@@ -699,4 +692,3 @@ button {
         animation-duration: 0.01ms !important;
     }
 }
-```
