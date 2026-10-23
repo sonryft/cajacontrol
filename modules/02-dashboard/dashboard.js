@@ -1,4 +1,3 @@
-```javascript
 /* ========================================
    CAJACONTROL — PANEL PRINCIPAL
    Módulo 02: Dashboard
