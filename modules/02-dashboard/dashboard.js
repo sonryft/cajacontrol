@@ -1,4 +1,4 @@
-```javascript
+
 /* ========================================
    CAJACONTROL — PANEL PRINCIPAL
    Módulo 02: Dashboard
@@ -188,4 +188,3 @@ document.addEventListener("DOMContentLoaded", async function () {
         );
     }
 });
-```
