@@ -133,6 +133,21 @@
             <div class="card-value" id="lowStockCount">0</div>
             <div class="card-help">Productos con existencias iguales o inferiores al mínimo.</div>
         </article>
+        <article class="card">
+            <div class="card-label">Ganancia bruta de hoy</div>
+            <div class="card-value" id="todayProfit">Bs 0,00</div>
+            <div class="card-help">Ventas de hoy menos el costo estimado de sus productos.</div>
+        </article>
+        <article class="card">
+            <div class="card-label">Ganancia bruta del mes</div>
+            <div class="card-value" id="monthProfit">Bs 0,00</div>
+            <div class="card-help">Acumulado del mes actual, según las ventas registradas.</div>
+        </article>
+        <article class="card">
+            <div class="card-label">Valor de compra del inventario</div>
+            <div class="card-value" id="inventoryValue">Bs 0,00</div>
+            <div class="card-help">Stock actual multiplicado por el costo de compra registrado.</div>
+        </article>
     </section>
 
     <div class="grid-two">
@@ -370,6 +385,45 @@
         }).join("")}</tr>`).join("");
     }
 
+    function calculateSalesProfit(sales, products, from, to) {
+        const productById = new Map(products.map(product => [getProductId(product), product]));
+        let revenue = 0;
+        let cost = 0;
+        let costKnown = true;
+        let count = 0;
+
+        sales.forEach((sale) => {
+            const items = getSaleItems(sale);
+            const date = getSaleDate(sale);
+            if (!inRange(date, from, to)) return;
+
+            count += 1;
+            revenue += getSaleTotal(sale, items);
+            if (!items.length) costKnown = false;
+
+            items.forEach(item => {
+                const qty = getItemQty(item);
+                const product = findProductForItem(item, productById, products);
+                const storedCost = item?.cost ?? item?.unitCost ?? item?.purchasePrice ??
+                    item?.precioCompra ?? item?.precio_compra ?? item?.product?.cost;
+
+                if (storedCost !== undefined && storedCost !== null && storedCost !== "") {
+                    cost += number(storedCost) * qty;
+                } else if (product && (
+                    product.cost !== undefined || product.purchasePrice !== undefined ||
+                    product.precioCompra !== undefined || product.precio_compra !== undefined
+                )) {
+                    // Fallback estimate using current inventory cost.
+                    cost += getProductCost(product) * qty;
+                } else {
+                    costKnown = false;
+                }
+            });
+        });
+
+        return { revenue, cost, profit: revenue - cost, costKnown, count };
+    }
+
     function buildReport() {
         const productsRead = readJSON(KEYS.products, []);
         const salesRead = readJSON(KEYS.sales, []);
@@ -469,6 +523,19 @@
         }).sort((a, b) => number(a.stock ?? a.existencia) - number(b.stock ?? b.existencia));
 
         $("lowStockCount").textContent = String(lowStock.length);
+
+        const now = new Date();
+        const todayKey = dateKey(now);
+        const monthStart = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
+        const todaySummary = calculateSalesProfit(sales, products, todayKey, todayKey);
+        const monthSummary = calculateSalesProfit(sales, products, monthStart, todayKey);
+        const inventoryValue = products.reduce((sum, product) =>
+            sum + number(product.stock ?? product.existencia) * getProductCost(product), 0);
+
+        $("todayProfit").textContent = todaySummary.costKnown ? money(todaySummary.profit) : "No disponible";
+        $("monthProfit").textContent = monthSummary.costKnown ? money(monthSummary.profit) : "No disponible";
+        $("inventoryValue").textContent = money(inventoryValue);
+
         renderTable("lowStockTable", lowStock.map(product => ({
             code: getProductCode(product) || "—",
             name: getProductName(product),
