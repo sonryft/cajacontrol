@@ -1,9 +1,11 @@
+```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#08090c">
+    <meta name="description" content="Panel de administración de CajaControl">
 
     <title>Panel de administración | CajaControl</title>
 
@@ -13,7 +15,9 @@
 <body>
     <div class="app">
 
+        <!-- MENÚ LATERAL -->
         <aside class="sidebar">
+
             <a class="brand" href="./index.html">
                 <span class="brand-icon">C</span>
                 <span>CajaControl</span>
@@ -30,6 +34,7 @@
             </div>
 
             <nav class="navigation" aria-label="Navegación principal">
+
                 <span class="nav-heading">GENERAL</span>
 
                 <a class="nav-link active" href="./index.html">
@@ -70,9 +75,11 @@
                     <span class="nav-icon">⚙</span>
                     <span>Configuración</span>
                 </a>
+
             </nav>
 
             <div class="sidebar-footer">
+
                 <div class="avatar" id="usuario-avatar">A</div>
 
                 <div class="user-info">
@@ -89,12 +96,15 @@
                 >
                     ↗
                 </button>
+
             </div>
         </aside>
 
+        <!-- CONTENIDO PRINCIPAL -->
         <main class="main-content">
 
             <header class="topbar">
+
                 <div>
                     <span class="eyebrow">PANEL DE CONTROL</span>
                     <h1>Resumen general</h1>
@@ -108,9 +118,12 @@
                         En línea
                     </span>
                 </div>
+
             </header>
 
+            <!-- BIENVENIDA -->
             <section class="welcome">
+
                 <div>
                     <span class="welcome-label">
                         TU NEGOCIO, BAJO CONTROL
@@ -127,9 +140,12 @@
                 </div>
 
                 <div class="welcome-mark" aria-hidden="true">C</div>
+
             </section>
 
+            <!-- INDICADORES -->
             <section class="section">
+
                 <div class="section-heading">
                     <div>
                         <h2>Indicadores principales</h2>
@@ -141,4 +157,93 @@
 
                     <article class="metric-card">
                         <span class="metric-label">Ventas de hoy</span>
-                        <strong class="metric-value" id="ventas
+                        <strong class="metric-value" id="ventas">—</strong>
+                        <span class="metric-note">Total de la jornada</span>
+                    </article>
+
+                    <article class="metric-card">
+                        <span class="metric-label">Movimientos de caja</span>
+                        <strong class="metric-value" id="movimientos-caja">—</strong>
+                        <span class="metric-note">Movimientos registrados</span>
+                    </article>
+
+                    <article class="metric-card">
+                        <span class="metric-label">Productos registrados</span>
+                        <strong class="metric-value" id="productos">—</strong>
+                        <span class="metric-note">Inventario de la empresa</span>
+                    </article>
+
+                    <article class="metric-card">
+                        <span class="metric-label">Estado de la caja</span>
+                        <strong class="metric-value metric-status" id="estado-caja">—</strong>
+                        <span class="metric-note">Estado de la jornada</span>
+                    </article>
+
+                </div>
+            </section>
+
+            <!-- ACCESOS RÁPIDOS -->
+            <section class="section">
+
+                <div class="section-heading">
+                    <div>
+                        <h2>Accesos rápidos</h2>
+                        <p>Entra directamente a las funciones principales</p>
+                    </div>
+                </div>
+
+                <div class="quick-grid">
+
+                    <a class="quick-card" href="../03-ventas/index.html">
+                        <span class="quick-icon">＋</span>
+                        <strong>Registrar venta</strong>
+                        <span>Accede al módulo de ventas.</span>
+                    </a>
+
+                    <a class="quick-card" href="../04-caja/index.html">
+                        <span class="quick-icon">▣</span>
+                        <strong>Arqueo de caja</strong>
+                        <span>Consulta las funciones de caja y arqueo.</span>
+                    </a>
+
+                    <a class="quick-card" href="../05-inventario/index.html">
+                        <span class="quick-icon">▦</span>
+                        <strong>Inventario</strong>
+                        <span>Consulta el módulo de productos.</span>
+                    </a>
+
+                    <a class="quick-card" href="../06-reportes/index.html">
+                        <span class="quick-icon">▥</span>
+                        <strong>Reportes</strong>
+                        <span>Accede a los informes del negocio.</span>
+                    </a>
+
+                </div>
+            </section>
+
+            <!-- MENSAJES DEL SISTEMA -->
+            <div
+                id="dashboard-message"
+                class="mensaje"
+                role="status"
+                aria-live="polite"
+            ></div>
+
+            <footer class="page-footer">
+                <span>CajaControl</span>
+                <span>Panel de administración</span>
+            </footer>
+
+        </main>
+    </div>
+
+    <!-- CONEXIÓN CON SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../01-login/supabase.js"></script>
+
+    <!-- LÓGICA DEL PANEL -->
+    <script src="dashboard.js"></script>
+
+</body>
+</html>
+```
