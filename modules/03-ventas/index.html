@@ -1,80 +1,434 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ventas | CajaControl</title>
-    <style>
-        :root {
-            --background: #08090c;
-            --surface: #11141b;
-            --border: rgba(255,255,255,.08);
-            --text: #f4f5f7;
-            --muted: #9298a6;
-            --accent: #b7f36b;
-            --accent-dark: #26391b;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            min-height: 100vh;
-            padding: 30px;
-            background: var(--background);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        }
-        .container { max-width: 1100px; margin: auto; }
-        header {
-            display: flex; justify-content: space-between;
-            align-items: center; gap: 15px; flex-wrap: wrap;
-            padding-bottom: 24px; border-bottom: 1px solid var(--border);
-        }
-        .eyebrow { color: var(--muted); font-size: 11px; letter-spacing: 2px; }
-        h1 { margin-top: 8px; font-size: 30px; }
-        .button {
-            display: inline-block; padding: 11px 16px;
-            color: var(--text); background: var(--surface);
-            border: 1px solid var(--border); border-radius: 10px;
-            text-decoration: none; cursor: pointer;
-        }
-        .button.primary { background: var(--accent); color: #10150b; font-weight: 700; }
-        .panel {
-            margin-top: 25px; padding: 25px;
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 18px;
-        }
-        .panel h2 { margin-bottom: 10px; font-size: 18px; }
-        .panel p { color: var(--muted); line-height: 1.7; }
-        .notice {
-            margin-top: 20px; padding: 15px;
-            background: var(--accent-dark); border-radius: 12px;
-            color: var(--accent); font-size: 13px; line-height: 1.6;
-        }
-        @media (max-width: 600px) {
-            body { padding: 18px; }
-            h1 { font-size: 25px; }
-            .panel { padding: 18px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CajaControl | Ventas</title>
+<style>
+:root{--bg:#0b0d10;--panel:#14181e;--panel2:#1b2028;--border:#2b323c;--text:#f3f5f7;--muted:#9ba5b1;--accent:#c7f36b;--danger:#ff7373;--ok:#8be0a1;--radius:15px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.wrap{max-width:1050px;margin:0 auto;padding:28px 18px 48px}.top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:24px}.eyebrow{color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}h1{font-size:clamp(28px,4vw,38px);margin:5px 0 4px;letter-spacing:-.04em}.sub{color:var(--muted);margin:0}.status{padding:9px 12px;border:1px solid var(--border);border-radius:999px;color:var(--muted);font-size:13px;white-space:nowrap}.status.open{color:var(--ok);border-color:#315b40}.status.closed{color:#ffc477;border-color:#654b2d}
+.layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(280px,.9fr);gap:18px}.card{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:22px;min-width:0}.card h2{font-size:18px;margin:0 0 18px}.field{margin-bottom:17px}.field label{display:block;color:#c9d0d8;font-size:13px;font-weight:650;margin-bottom:7px}input,select,textarea{width:100%;background:#0e1116;color:var(--text);border:1px solid #353e49;border-radius:10px;padding:12px 13px;font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px #c7f36b1c}select:disabled,input:disabled{opacity:.55}.help{font-size:12px;color:var(--muted);margin-top:6px}
+.product-results{margin-top:7px;border:1px solid var(--border);border-radius:11px;overflow:hidden;background:#101318;max-height:260px;overflow-y:auto}
+.product-results[hidden],.selected-product[hidden]{display:none}
+.product-result{display:flex;justify-content:space-between;align-items:center;gap:12px;width:100%;text-align:left;padding:12px 13px;background:transparent;border:0;border-bottom:1px solid var(--border);color:var(--text);cursor:pointer;font:inherit}
+.product-result:last-child{border-bottom:0}
+.product-result:hover,.product-result:focus{background:#222a32;outline:none}
+.product-result-name{font-weight:700;display:block}
+.product-result-meta{display:block;font-size:12px;color:var(--muted);margin-top:3px}
+.product-result-price{white-space:nowrap;color:var(--accent);font-weight:800;font-size:13px}
+.selected-product{margin-top:9px;padding:11px 12px;border:1px solid #40512e;background:#c7f36b0b;border-radius:10px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.selected-product strong{display:block}
+.selected-product small{display:block;color:var(--muted);margin-top:3px}
+.change-product{background:transparent;border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 9px;cursor:pointer;white-space:nowrap}
+.totalbox{display:flex;justify-content:space-between;align-items:center;padding:16px;background:#0e1116;border:1px solid var(--border);border-radius:12px;margin:20px 0}.totalbox span{color:var(--muted)}.totalbox strong{font-size:27px;letter-spacing:-.04em}.btn{border:0;border-radius:10px;padding:13px 16px;font:inherit;font-weight:800;cursor:pointer;transition:transform .12s,opacity .12s}.btn:active{transform:scale(.99)}.btn:disabled{opacity:.4;cursor:not-allowed}.primary{width:100%;background:var(--accent);color:#11150b}.secondary{background:#252c35;color:var(--text);border:1px solid #3a434f}.danger{background:#3a2022;color:#ffb5b5;border:1px solid #694044}.paygrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.payoption{position:relative}.payoption input{position:absolute;opacity:0;pointer-events:none}.payoption span{display:block;text-align:center;border:1px solid #353e49;border-radius:10px;padding:12px;cursor:pointer;color:#c9d0d8}.payoption input:checked+span{border-color:var(--accent);color:var(--accent);background:#c7f36b0d}.notice{padding:13px 14px;border-radius:10px;background:#292315;border:1px solid #5d4c2a;color:#f0d49b;font-size:13px;margin-bottom:16px}.notice.good{background:#13251b;border-color:#2e5a3c;color:#b8efc5}.notice.error{background:#2a1719;border-color:#603337;color:#ffb9bc}.history{margin-top:18px}.historyhead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}.historyhead h2{margin:0}.tablewrap{overflow:auto;border:1px solid var(--border);border-radius:11px}table{width:100%;border-collapse:collapse;min-width:560px}th,td{text-align:left;padding:12px 13px;border-bottom:1px solid var(--border);font-size:13px}th{color:var(--muted);font-weight:650;background:#101318}tr:last-child td{border-bottom:0}.amount{font-weight:800;white-space:nowrap}.pill{display:inline-block;border-radius:999px;padding:4px 8px;background:#202832;color:#d6dde5;font-size:11px}.empty{color:var(--muted);text-align:center;padding:24px}.smallbtn{font-size:12px;padding:8px 10px}.modalback{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:18px;z-index:20}.modalback.show{display:flex}.modal{width:min(460px,100%);background:#171b22;border:1px solid #3a424d;border-radius:17px;padding:23px;box-shadow:0 20px 80px #0009}.modal h2{margin:0 0 6px;font-size:22px}.modal p{margin:0 0 18px;color:var(--muted);font-size:14px}.summary{background:#0d1015;border:1px solid var(--border);border-radius:11px;padding:14px;margin-bottom:18px}.sumrow{display:flex;justify-content:space-between;gap:16px;padding:6px 0;font-size:14px}.sumrow span:first-child{color:var(--muted)}.sumrow.total{border-top:1px solid var(--border);margin-top:6px;padding-top:12px;font-size:17px;font-weight:800}.modalactions{display:grid;grid-template-columns:1fr 1fr;gap:10px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);padding:12px 17px;border-radius:11px;background:#1b3324;color:#c8f6d2;border:1px solid #3c744b;z-index:40;display:none;max-width:calc(100% - 30px);text-align:center}.toast.show{display:block}.footnote{color:var(--muted);font-size:12px;margin-top:16px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.top{display:block}.status{display:inline-block;margin-top:12px}.card{padding:18px}.wrap{padding:22px 13px 36px}.totalbox strong{font-size:24px}}
+</style>
 </head>
 <body>
-    <main class="container">
-        <header>
-            <div>
-                <div class="eyebrow">CAJACONTROL / MÓDULOS</div>
-                <h1>Ventas</h1>
-            </div>
-            <a class="button" href="../02-dashboard/index.html">← Volver al dashboard</a>
-        </header>
+<div class="wrap">
+  <header class="top">
+    <div><div class="eyebrow">CajaControl / Operaciones</div><h1>Ventas</h1><p class="sub">Registra una venta y actualiza los movimientos de Caja e Inventario.</p></div>
+    <div id="cashStatus" class="status">Comprobando caja…</div>
+  </header>
 
-        <section class="panel">
-            <h2>Gestión de ventas</h2>
-            <p>Este espacio estará destinado al registro y seguimiento de las ventas de tu empresa.</p>
-            <div class="notice">
-                El módulo está creado. El registro de ventas y su conexión con el inventario y la caja se implementarán en la siguiente etapa.
-            </div>
-        </section>
-    </main>
+  <div id="globalNotice" class="notice" role="status">Comprobando disponibilidad…</div>
+
+  <main class="layout">
+    <section class="card">
+      <h2>Registrar venta</h2>
+      <form id="saleForm">
+        <div class="field">
+          <label for="productSearch">Buscar producto por nombre o código</label>
+          <input id="productSearch" type="text" autocomplete="off" placeholder="Escribe el nombre o código del producto…" aria-describedby="searchHelp">
+          <div id="searchHelp" class="help">Escribe parte del nombre o el código y selecciona un resultado.</div>
+          <div id="productResults" class="product-results" role="listbox" aria-label="Resultados de productos" hidden></div>
+          <input id="productId" type="hidden" required>
+          <div id="selectedProduct" class="selected-product" hidden></div>
+          <div id="stockHelp" class="help">Selecciona un producto del inventario.</div>
+        </div>
+        <div class="field">
+          <label for="quantity">Cantidad</label>
+          <input id="quantity" type="number" min="0.001" step="0.001" value="1" required>
+        </div>
+        <div class="field">
+          <label for="payment">Método de pago</label>
+          <div class="paygrid">
+            <label class="payoption"><input type="radio" name="payment" value="efectivo" checked><span>💵 Efectivo</span></label>
+            <label class="payoption"><input type="radio" name="payment" value="qr"><span>▦ QR</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="note">Nota (opcional)</label>
+          <input id="note" type="text" maxlength="160" placeholder="Ej.: venta mostrador">
+        </div>
+        <div class="totalbox"><span>Total de la venta</span><strong id="total">Bs 0,00</strong></div>
+        <button id="sellButton" class="btn primary" type="submit">VENDER</button>
+        <div class="footnote">La venta solo se registra después de confirmar en la ventana de revisión.</div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Resumen</h2>
+      <div class="sumrow"><span>Producto</span><strong id="previewProduct">—</strong></div>
+      <div class="sumrow"><span>Precio unitario</span><strong id="unitPrice">Bs 0,00</strong></div>
+      <div class="sumrow"><span>Cantidad</span><strong id="previewQty">1</strong></div>
+      <div class="sumrow"><span>Pago</span><strong id="previewPayment">Efectivo</strong></div>
+      <div class="totalbox"><span>Total</span><strong id="previewTotal">Bs 0,00</strong></div>
+      <p class="help">Los productos y precios se leen del módulo Inventario. No se crean productos de ejemplo.</p>
+    </section>
+  </main>
+
+  <section class="card history">
+    <div class="historyhead"><h2>Ventas registradas</h2><button id="exportButton" class="btn secondary smallbtn" type="button">Exportar CSV</button></div>
+    <div class="tablewrap"><table><thead><tr><th>Fecha</th><th>Producto</th><th>Cantidad</th><th>Pago</th><th>Total</th><th>Estado</th></tr></thead><tbody id="salesRows"><tr><td colspan="6" class="empty">Todavía no hay ventas registradas.</td></tr></tbody></table></div>
+  </section>
+</div>
+
+<div id="confirmBack" class="modalback" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+  <div class="modal">
+    <h2 id="confirmTitle">¿Confirmar esta venta?</h2>
+    <p>Revisa los datos antes de registrar. Si cancelas, no se cambiará ningún dato.</p>
+    <div class="summary">
+      <div class="sumrow"><span>Producto</span><strong id="confirmProduct">—</strong></div>
+      <div class="sumrow"><span>Precio unitario</span><strong id="confirmPrice">Bs 0,00</strong></div>
+      <div class="sumrow"><span>Cantidad</span><strong id="confirmQty">1</strong></div>
+      <div class="sumrow"><span>Método de pago</span><strong id="confirmPayment">Efectivo</strong></div>
+      <div class="sumrow"><span>Nota</span><strong id="confirmNote">—</strong></div>
+      <div class="sumrow total"><span>Total</span><strong id="confirmTotal">Bs 0,00</strong></div>
+    </div>
+    <div class="modalactions"><button id="cancelConfirm" class="btn secondary" type="button">CANCELAR</button><button id="approveSale" class="btn primary" type="button">CONFIRMAR VENTA</button></div>
+  </div>
+</div>
+<div id="toast" class="toast" role="status"></div>
+
+<script>
+(() => {
+  'use strict';
+  const KEYS = {
+    products: 'cajacontrol_productos',
+    inventoryMoves: 'cajacontrol_inventario_movimientos',
+    cash: 'cajacontrol-caja-v1',
+    sales: 'cajacontrol_ventas'
+  };
+  const $ = id => document.getElementById(id);
+  let products = [], pendingSale = null, busy = false, toastTimer;
+
+  const money = value => 'Bs ' + (Number(value) || 0).toLocaleString('es-BO', {minimumFractionDigits:2, maximumFractionDigits:2});
+  const number = value => Math.round((Number(value) + Number.EPSILON) * 1000) / 1000;
+  const moneyNum = value => Math.round((Number(value) + Number.EPSILON) * 100) / 100;
+  const read = (key, fallback) => {
+    try { const value = localStorage.getItem(key); return value === null ? fallback : JSON.parse(value); }
+    catch { return fallback; }
+  };
+  const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const cashData = () => {
+    const data = read(KEYS.cash, {current:null, closures:[]});
+    if (!data || typeof data !== 'object') return {current:null, closures:[]};
+    return data;
+  };
+  const currentCash = () => cashData().current;
+  const getProductId = p => String(p.id ?? p.code ?? p.codigo ?? '');
+  const getPrice = p => Number(p.price ?? p.precioVenta ?? p.salePrice ?? 0);
+  const getStock = p => Number(p.stock ?? p.existencia ?? 0);
+  const getName = p => String(p.name ?? p.nombre ?? 'Producto sin nombre');
+  const selectedProduct = () => products.find(p => getProductId(p) === $('productId').value);
+  function selectProduct(product) {
+    if (!product) return;
+    $('productId').value = getProductId(product);
+    $('productSearch').value = getName(product);
+    $('productResults').hidden = true;
+    $('selectedProduct').hidden = false;
+    $('selectedProduct').innerHTML = `<div><strong>${esc(getName(product))}</strong><small>Código: ${esc(product.code || product.codigo || '—')} · ${money(getPrice(product))} · Stock: ${esc(getStock(product))} ${esc(product.unit || 'unidades')}</small></div><button type="button" class="change-product" id="changeProduct">Cambiar</button>`;
+    updatePreview();
+  }
+  function clearSelectedProduct(keepSearch=false) {
+    $('productId').value = '';
+    $('selectedProduct').hidden = true;
+    $('selectedProduct').innerHTML = '';
+    if (!keepSearch) $('productSearch').value = '';
+    updatePreview();
+  }
+  function renderProductResults(query) {
+    const box = $('productResults');
+    const q = query.trim().toLocaleLowerCase('es');
+    if (!q) { box.hidden = true; box.innerHTML = ''; return; }
+    const matches = products.filter(p => {
+      const name = getName(p).toLocaleLowerCase('es');
+      const code = String(p.code ?? p.codigo ?? '').toLocaleLowerCase('es');
+      return name.includes(q) || code.includes(q);
+    }).slice(0, 12);
+    if (!matches.length) {
+      box.innerHTML = '<div class="empty">No se encontraron productos. Prueba con otro nombre o código.</div>';
+      box.hidden = false;
+      return;
+    }
+    box.innerHTML = matches.map(p => `<button type="button" class="product-result" role="option" data-product-id="${esc(getProductId(p))}"><span><span class="product-result-name">${esc(getName(p))}</span><span class="product-result-meta">Código: ${esc(p.code || p.codigo || '—')} · Stock: ${esc(getStock(p))} ${esc(p.unit || 'unidades')}</span></span><span class="product-result-price">${money(getPrice(p))}</span></button>`).join('');
+    box.hidden = false;
+  }
+  const chosenPayment = () => document.querySelector('input[name="payment"]:checked')?.value || 'efectivo';
+  const paymentLabel = method => method === 'qr' ? 'QR' : 'Efectivo';
+  const currentQty = () => number($('quantity').value);
+  const currentTotal = () => moneyNum(getPrice(selectedProduct() || {}) * currentQty());
+
+  function showToast(message, error=false) {
+    const t = $('toast');
+    t.textContent = message;
+    t.style.background = error ? '#3a2022' : '#1b3324';
+    t.style.color = error ? '#ffb9bc' : '#c8f6d2';
+    t.style.borderColor = error ? '#694044' : '#3c744b';
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 3800);
+  }
+
+  function renderCashStatus() {
+    const open = !!currentCash();
+    const status = $('cashStatus');
+    status.textContent = open ? '● Caja abierta' : '● Caja cerrada';
+    status.className = 'status ' + (open ? 'open' : 'closed');
+    $('globalNotice').className = 'notice ' + (open ? 'good' : '');
+    $('globalNotice').textContent = open
+      ? 'Hay una caja abierta. Las ventas confirmadas se registrarán como ingresos en esa caja.'
+      : 'Para registrar ventas, primero debes abrir una caja en el módulo Caja.';
+    updateButtonState();
+  }
+
+  function loadProducts() {
+    const raw = read(KEYS.products, []);
+    products = Array.isArray(raw) ? raw.filter(p => p && getProductId(p)) : [];
+    const priorId = $('productId').value;
+    const prior = products.find(p => getProductId(p) === priorId);
+    if (prior) {
+      selectProduct(prior);
+    } else {
+      clearSelectedProduct();
+      $('productSearch').disabled = products.length === 0;
+      $('productSearch').placeholder = products.length
+        ? 'Escribe el nombre o código del producto…'
+        : 'No hay productos en Inventario';
+      $('stockHelp').textContent = products.length
+        ? 'Selecciona un producto del inventario.'
+        : 'Primero crea un producto en el módulo Inventario.';
+    }
+    updatePreview();
+  }
+
+  function updatePreview() {
+    const p = selectedProduct();
+    const qty = currentQty();
+    const validQty = Number.isFinite(qty) && qty > 0;
+    const total = p && validQty ? moneyNum(getPrice(p) * qty) : 0;
+    $('total').textContent = money(total);
+    $('previewTotal').textContent = money(total);
+    $('previewProduct').textContent = p ? getName(p) : '—';
+    $('unitPrice').textContent = money(p ? getPrice(p) : 0);
+    $('previewQty').textContent = validQty ? String(qty) : '—';
+    $('previewPayment').textContent = paymentLabel(chosenPayment());
+    $('stockHelp').textContent = p
+      ? `Disponible: ${getStock(p)} ${p.unit || 'unidades'} · Precio: ${money(getPrice(p))}`
+      : 'Selecciona un producto del inventario.';
+    updateButtonState();
+  }
+
+  function updateButtonState() {
+    const p = selectedProduct();
+    const qty = currentQty();
+    const cashOpen = !!currentCash();
+    const valid = !!p && Number.isFinite(qty) && qty > 0 && getPrice(p) >= 0 && qty <= getStock(p) && cashOpen && !busy;
+    $('sellButton').disabled = !valid;
+    if (p && qty > getStock(p)) $('stockHelp').textContent = `Stock insuficiente. Disponible: ${getStock(p)} ${p.unit || 'unidades'}.`;
+  }
+
+  function renderSales() {
+    const sales = read(KEYS.sales, []);
+    const rows = $('salesRows');
+    if (!Array.isArray(sales) || sales.length === 0) {
+      rows.innerHTML = '<tr><td colspan="6" class="empty">Todavía no hay ventas registradas.</td></tr>';
+      return;
+    }
+    rows.innerHTML = sales.slice().reverse().slice(0,100).map(s => {
+      const item = Array.isArray(s.items) ? s.items[0] : null;
+      const productName = s.productName || item?.name || 'Venta';
+      const qty = s.quantity ?? item?.qty ?? '';
+      const pay = paymentLabel(String(s.payment || '').toLowerCase() === 'qr' ? 'qr' : (String(s.payment || '').toLowerCase().includes('qr') ? 'qr' : 'efectivo'));
+      const date = s.timestamp || s.date || '';
+      let formattedDate = date;
+      try { formattedDate = new Date(date).toLocaleString('es-BO'); } catch {}
+      return `<tr><td>${esc(formattedDate)}</td><td>${esc(productName)}</td><td>${esc(qty)}</td><td><span class="pill">${pay}</span></td><td class="amount">${money(s.total)}</td><td><span class="pill">${esc(s.status || 'confirmada')}</span></td></tr>`;
+    }).join('');
+  }
+
+  function openConfirm() {
+    const p = selectedProduct(), qty = currentQty(), method = chosenPayment();
+    if (!p) return showToast('Selecciona un producto.', true);
+    if (!Number.isFinite(qty) || qty <= 0) return showToast('Introduce una cantidad válida.', true);
+    if (qty > getStock(p)) return showToast('No hay suficiente stock para esa cantidad.', true);
+    if (!currentCash()) return showToast('Primero debes abrir una caja.', true);
+    if (!Number.isFinite(getPrice(p)) || getPrice(p) < 0) return showToast('El producto tiene un precio no válido.', true);
+    pendingSale = {productId:getProductId(p), quantity:qty, payment:method, note:$('note').value.trim(), unitPrice:moneyNum(getPrice(p)), total:moneyNum(getPrice(p)*qty)};
+    $('confirmProduct').textContent = getName(p);
+    $('confirmPrice').textContent = money(pendingSale.unitPrice);
+    $('confirmQty').textContent = `${qty} ${p.unit || 'unidades'}`;
+    $('confirmPayment').textContent = paymentLabel(method);
+    $('confirmNote').textContent = pendingSale.note || '—';
+    $('confirmTotal').textContent = money(pendingSale.total);
+    $('confirmBack').classList.add('show');
+    $('approveSale').focus();
+  }
+
+  function closeConfirm() {
+    $('confirmBack').classList.remove('show');
+    pendingSale = null;
+  }
+
+  function registerSale() {
+    if (busy || !pendingSale) return;
+    busy = true;
+    $('approveSale').disabled = true;
+    const pSale = {...pendingSale};
+    const keys = [KEYS.products, KEYS.inventoryMoves, KEYS.cash, KEYS.sales];
+    const before = Object.fromEntries(keys.map(k => [k, localStorage.getItem(k)]));
+    try {
+      // Re-read every source at confirmation time to prevent selling stale stock or using a closed cash session.
+      const freshProducts = read(KEYS.products, []);
+      if (!Array.isArray(freshProducts)) throw new Error('No se pudo leer el inventario.');
+      const index = freshProducts.findIndex(p => getProductId(p) === pSale.productId);
+      if (index < 0) throw new Error('El producto ya no existe en Inventario. Actualiza la página.');
+      const product = freshProducts[index];
+      const oldStock = getStock(product);
+      if (oldStock < pSale.quantity) throw new Error(`Stock insuficiente. Disponible: ${oldStock}.`);
+      const price = getPrice(product);
+      if (moneyNum(price) !== pSale.unitPrice) throw new Error('El precio cambió. Revisa la venta nuevamente.');
+      const cash = cashData();
+      if (!cash.current) throw new Error('La caja se cerró. Abre una caja antes de vender.');
+      if (!Array.isArray(cash.current.movements)) cash.current.movements = [];
+      const now = new Date();
+      const timestamp = now.toISOString();
+      const saleId = (globalThis.crypto?.randomUUID?.() || `V-${Date.now()}-${Math.random().toString(16).slice(2,8)}`);
+      const saleNumber = `V-${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}-${saleId.slice(-6).toUpperCase()}`;
+      const newStock = number(oldStock - pSale.quantity);
+      freshProducts[index] = {...product, stock:newStock, updatedAt:timestamp};
+      const invMoves = read(KEYS.inventoryMoves, []);
+      const inventoryMoves = Array.isArray(invMoves) ? invMoves : [];
+      inventoryMoves.push({
+        id: saleId, timestamp, productId:pSale.productId, code:product.code || '',
+        name:getName(product), type:'salida', qty:pSale.quantity,
+        note:`Venta ${saleNumber}${pSale.note ? ' · ' + pSale.note : ''}`,
+        oldStock, newStock
+      });
+      const itemSubtotal = pSale.total;
+      const sale = {
+        id:saleId, number:saleNumber, timestamp, dateKey:now.toISOString().slice(0,10),
+        productId:pSale.productId, productName:getName(product), code:product.code || '',
+        quantity:pSale.quantity, unit:product.unit || 'unidades', unitPrice:pSale.unitPrice,
+        items:[{id:pSale.productId, code:product.code || '', name:getName(product), price:pSale.unitPrice, qty:pSale.quantity, subtotal:itemSubtotal}],
+        payment:pSale.payment === 'qr' ? 'QR' : 'Efectivo', total:pSale.total,
+        note:pSale.note, status:'confirmada', source:'modulo-ventas'
+      };
+      const salesRaw = read(KEYS.sales, []);
+      const sales = Array.isArray(salesRaw) ? salesRaw : [];
+      if (sales.some(s => s && s.id === saleId)) throw new Error('Esta venta ya fue registrada.');
+      sales.push(sale);
+      cash.current.movements.push({
+        id:`${saleId}-CAJA`, date:timestamp, type:'ingreso', amount:pSale.total,
+        method:pSale.payment, note:`Venta ${saleNumber} · ${getName(product)} × ${pSale.quantity}${pSale.note ? ' · ' + pSale.note : ''}`,
+        saleId, saleNumber
+      });
+
+      // Persist the four linked records; roll back all keys if any write fails.
+      write(KEYS.products, freshProducts);
+      write(KEYS.inventoryMoves, inventoryMoves);
+      write(KEYS.cash, cash);
+      write(KEYS.sales, sales);
+
+      closeConfirm();
+      $('saleForm').reset();
+      $('quantity').value = '1';
+      $('productId').value = '';
+      $('productSearch').value = '';
+      $('selectedProduct').hidden = true;
+      $('selectedProduct').innerHTML = '';
+      $('productResults').hidden = true;
+      document.querySelector('input[name="payment"][value="efectivo"]').checked = true;
+      loadProducts();
+      renderCashStatus();
+      renderSales();
+      showToast(`Venta ${saleNumber} registrada correctamente.`);
+    } catch (error) {
+      for (const key of keys) {
+        try {
+          if (before[key] === null) localStorage.removeItem(key);
+          else localStorage.setItem(key, before[key]);
+        } catch {}
+      }
+      showToast(error.message || 'No se pudo registrar la venta. No se guardaron los cambios.', true);
+      loadProducts();
+      renderCashStatus();
+    } finally {
+      busy = false;
+      $('approveSale').disabled = false;
+      updateButtonState();
+    }
+  }
+
+  function exportCSV() {
+    const sales = read(KEYS.sales, []);
+    if (!Array.isArray(sales) || !sales.length) return showToast('Todavía no hay ventas para exportar.', true);
+    const csvCell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+    const lines = [['Número','Fecha','Producto','Código','Cantidad','Unidad','Precio unitario','Método de pago','Total','Nota','Estado']];
+    sales.forEach(s => lines.push([s.number || s.id, s.timestamp || s.date, s.productName || s.items?.[0]?.name, s.code || s.items?.[0]?.code, s.quantity ?? s.items?.[0]?.qty, s.unit || '', s.unitPrice ?? s.items?.[0]?.price, s.payment, s.total, s.note, s.status]));
+    const csv = '\uFEFF' + lines.map(row => row.map(csvCell).join(';')).join('\r\n');
+    const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download='cajacontrol-ventas.csv'; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  $('productSearch').addEventListener('input', () => {
+    const selected = selectedProduct();
+    if (selected && $('productSearch').value !== getName(selected)) clearSelectedProduct(true);
+    renderProductResults($('productSearch').value);
+  });
+  $('productSearch').addEventListener('focus', () => {
+    if ($('productSearch').value.trim() && !$('productId').value) renderProductResults($('productSearch').value);
+  });
+  $('productResults').addEventListener('click', e => {
+    const button = e.target.closest('[data-product-id]');
+    if (!button) return;
+    const product = products.find(p => getProductId(p) === button.dataset.productId);
+    selectProduct(product);
+  });
+  $('selectedProduct').addEventListener('click', e => {
+    if (e.target.closest('#changeProduct')) {
+      clearSelectedProduct();
+      $('productSearch').focus();
+    }
+  });
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#productSearch') && !e.target.closest('#productResults')) $('productResults').hidden = true;
+  });
+  $('quantity').addEventListener('input', updatePreview);
+  document.querySelectorAll('input[name="payment"]').forEach(el => el.addEventListener('change', updatePreview));
+  $('saleForm').addEventListener('submit', e => { e.preventDefault(); openConfirm(); });
+  $('cancelConfirm').addEventListener('click', closeConfirm);
+  $('approveSale').addEventListener('click', registerSale);
+  $('confirmBack').addEventListener('click', e => { if (e.target === $('confirmBack')) closeConfirm(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('confirmBack').classList.contains('show')) closeConfirm(); });
+  $('exportButton').addEventListener('click', exportCSV);
+
+  loadProducts();
+  renderCashStatus();
+  renderSales();
+  // Refresh status and inventory when returning to this tab after changes in another module.
+  window.addEventListener('focus', () => { loadProducts(); renderCashStatus(); renderSales(); });
+  window.addEventListener('storage', e => {
+    if ([KEYS.products, KEYS.cash, KEYS.sales].includes(e.key)) {
+      loadProducts(); renderCashStatus(); renderSales();
+    }
+  });
+})();
+</script>
 </body>
 </html>
-```
