@@ -4,314 +4,317 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Caja y Arqueo | CajaControl</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--background:#08090c;--surface:#11141b;--border:rgba(255,255,255,.1);--text:#f4f5f7;--muted:#9298a6;--accent:#b7f36b;--accent-dark:#26391b;--danger:#ff7979;--warning:#ffd479}
-*{box-sizing:border-box;margin:0;padding:0}
-body{min-height:100vh;padding:24px;background:var(--background);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.container{max-width:1180px;margin:auto}
-header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--border)}
-.eyebrow{color:var(--muted);font-size:11px;letter-spacing:2px}h1{margin-top:8px;font-size:30px}.muted{color:var(--muted)}
-.button,button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 15px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:10px;text-decoration:none;cursor:pointer;font:inherit}
-button.primary{background:var(--accent);color:#11170b;border-color:transparent;font-weight:700}button.danger{color:var(--danger)}button:disabled{opacity:.45;cursor:not-allowed}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}
-.card,.panel{padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:16px;min-width:0}
-.card .label{font-size:12px;color:var(--muted)}.card .value{font-size:25px;font-weight:750;margin-top:10px;overflow-wrap:anywhere}.card .sub{font-size:12px;color:var(--muted);margin-top:7px}
+*{box-sizing:border-box;margin:0;padding:0}body{min-height:100vh;padding:24px;background:var(--background);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.container{max-width:1180px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--border)}.eyebrow{color:var(--muted);font-size:11px;letter-spacing:2px}h1{margin-top:8px;font-size:30px}.muted{color:var(--muted)}
+.button,button{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 15px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:10px;text-decoration:none;cursor:pointer;font:inherit}button.primary{background:var(--accent);color:#11170b;border-color:transparent;font-weight:700}button.danger{color:var(--danger)}button:disabled{opacity:.45;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:22px}.card,.panel{padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:16px;min-width:0}.card .label{font-size:12px;color:var(--muted)}.card .value{font-size:25px;font-weight:750;margin-top:10px;overflow-wrap:anywhere}.card .sub{font-size:12px;color:var(--muted);margin-top:7px}
 .columns{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.panel h2{font-size:18px;margin-bottom:8px}.panel>p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:17px}
 form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}label{font-size:12px;color:var(--muted)}input,select,textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:9px;background:var(--background);color:var(--text);font:inherit;min-width:0}input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px}.form-actions{display:flex;gap:10px;flex-wrap:wrap}
-.status{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:12px;background:var(--accent-dark);color:var(--accent)}.status.closed{background:rgba(255,121,121,.12);color:var(--danger)}
-.notice{padding:12px 14px;border-radius:10px;background:rgba(255,212,121,.1);color:var(--warning);font-size:12px;line-height:1.6;margin-top:14px}
+.status{display:inline-flex;padding:6px 10px;border-radius:999px;font-size:12px;background:var(--accent-dark);color:var(--accent)}.status.closed{background:rgba(255,121,121,.12);color:var(--danger)}.notice{padding:12px 14px;border-radius:10px;background:rgba(255,212,121,.1);color:var(--warning);font-size:12px;line-height:1.6;margin-top:14px}
 .table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--border);font-size:13px;white-space:nowrap}th{font-size:11px;color:var(--muted);font-weight:600}td.amount{text-align:right;font-variant-numeric:tabular-nums}.empty{text-align:center;color:var(--muted);padding:28px 10px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:15px}.section-head h2{margin:0}.positive{color:var(--accent)}.negative{color:var(--danger)}[hidden]{display:none!important}.view-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;border-bottom:1px solid var(--border);padding-bottom:12px}.view-tab{font-weight:700}.view-tab.active{background:var(--accent);color:#11170b;border-color:transparent}.footer-note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:15px}
-@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.columns{grid-template-columns:1fr}}
-@media(max-width:520px){body{padding:14px}.grid{gap:9px}.card{padding:14px}.card .value{font-size:21px}.panel{padding:15px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}h1{font-size:25px}}
-
- .closure-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
- .closure-summary-grid .card{min-width:0}
- .difference-card{border-color:rgba(255,90,90,.55);background:rgba(120,25,30,.16)}
- .difference-card .value{font-size:clamp(22px,2vw,30px)}
- .difference-card.is-short{border-color:#ef4444;background:rgba(127,29,29,.24)}
- .difference-card.is-over{border-color:#f59e0b;background:rgba(120,70,10,.20)}
- .difference-card.is-balanced{border-color:#65a30d;background:rgba(54,83,20,.18)}
- .difference-status{display:inline-block;margin-top:6px;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.04em}
- .is-short .difference-status{background:#7f1d1d;color:#fecaca}
- .is-over .difference-status{background:#78350f;color:#fde68a}
- .is-balanced .difference-status{background:#365314;color:#d9f99d}
- .closure-observation{margin:16px 0;padding:20px 22px;border:1px solid #ef4444;border-radius:14px;background:rgba(127,29,29,.20);display:flex;gap:16px;align-items:flex-start}
- .closure-observation[hidden]{display:none}
- .closure-observation-icon{flex:0 0 44px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#ef4444;color:#fff;font-size:24px;font-weight:900}
- .closure-observation-label{margin:0 0 8px;color:#fca5a5;font-size:13px;font-weight:800;letter-spacing:.12em}
- .closure-observation-text{font-size:18px;line-height:1.6;overflow-wrap:anywhere;color:var(--text,#f4f5f7)}
- @media(max-width:850px){.closure-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
- @media(max-width:520px){.closure-summary-grid{grid-template-columns:1fr}.closure-observation{padding:16px}.closure-observation-text{font-size:16px}}
-
+@media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.columns{grid-template-columns:1fr}}@media(max-width:520px){body{padding:14px}.grid{gap:9px}.card{padding:14px}.card .value{font-size:21px}.panel{padding:15px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}h1{font-size:25px}}
+#message{margin-top:14px;padding:12px 14px;border-radius:10px;display:none;white-space:pre-wrap;line-height:1.5;font-size:13px}#message.ok{display:block;background:rgba(183,243,107,.1);color:var(--accent)}#message.error{display:block;background:rgba(255,121,121,.12);color:var(--danger)}
 </style>
 </head>
 <body>
 <main class="container">
 <header>
  <div><div class="eyebrow">CAJACONTROL / MÓDULOS</div><h1>Caja y Arqueo</h1><p class="muted" style="margin-top:8px;font-size:13px">Control de movimientos y cierre de caja</p></div>
- <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span id="status" class="status closed">Caja cerrada</span><a class="button" href="../02-dashboard/index.html">← Dashboard</a></div>
+ <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span id="status" class="status closed">Conectando…</span><a class="button" href="../02-dashboard/index.html">← Dashboard</a></div>
 </header>
+<div id="message" role="status"></div>
 <nav class="view-tabs" aria-label="Secciones de caja">
  <button type="button" class="view-tab active" data-view="abrir">Abrir caja</button>
  <button type="button" class="view-tab" data-view="movimientos">Movimientos</button>
- <button type="button" class="view-tab" data-view="arqueo">Cerrar caja y arqueo</button>
+ <button type="button" class="view-tab" data-view="arqueo">Arqueo</button>
  <button type="button" class="view-tab" data-view="historial">Historial de cajas</button>
 </nav>
-<div id="abrirView">
-<section class="grid">
- <article class="card"><div class="label">Fondo inicial</div><div class="value" id="openingTotal">Bs 0,00</div><div class="sub">Dinero declarado al abrir</div></article>
- <article class="card"><div class="label">Ingresos de caja</div><div class="value" id="incomeTotal">Bs 0,00</div><div class="sub">Ingresos manuales registrados</div></article>
- <article class="card"><div class="label">Egresos de caja</div><div class="value" id="expenseTotal">Bs 0,00</div><div class="sub">Salidas registradas</div></article>
- <article class="card"><div class="label">Saldo esperado en efectivo</div><div class="value" id="expectedTotal">Bs 0,00</div><div class="sub">Fondo + ingresos en efectivo − egresos en efectivo</div></article>
-</section>
-<section class="panel" id="openingPanel" style="margin-top:22px">
-  <h2 id="openTitle">Abrir caja</h2><p>Registra el fondo inicial antes de empezar a trabajar. Solo puede haber una caja abierta en este navegador.</p>
-  <form id="openForm">
-   <div class="form-grid">
-    <div class="field"><label for="openingAmount">Fondo inicial (Bs)</label><input id="openingAmount" type="number" min="0" step="0.01" value="0" required></div>
-    <div class="field"><label for="openingNote">Nota (opcional)</label><input id="openingNote" maxlength="160" placeholder="Ej. Fondo del turno mañana"></div>
-   </div><div class="form-actions"><button class="primary" id="openButton" type="submit">Abrir caja</button></div>
-  </form>
-  <div class="notice">Esta primera versión guarda los datos en este navegador. Todavía no sincroniza con otros dispositivos ni usuarios; eso lo conectaremos después a la base de datos.</div>
+<section id="abrirView">
+ <section class="grid">
+  <article class="card"><div class="label">Fondo inicial</div><div class="value" id="openingTotal">Bs 0,00</div><div class="sub">Dinero declarado al abrir</div></article>
+  <article class="card"><div class="label">Ingresos manuales</div><div class="value" id="incomeTotal">Bs 0,00</div><div class="sub">Ingresos registrados en esta caja</div></article>
+  <article class="card"><div class="label">Egresos manuales</div><div class="value" id="expenseTotal">Bs 0,00</div><div class="sub">Salidas registradas</div></article>
+  <article class="card"><div class="label">Efectivo esperado</div><div class="value" id="expectedTotal">Bs 0,00</div><div class="sub">Fondo + movimientos de efectivo</div></article>
  </section>
-</div>
-<div id="movimientosView">
-<section class="panel" id="movementPanel" style="margin-top:16px">
-  <h2>Registrar movimiento</h2><p>Registra ingresos o egresos que no correspondan a una venta automática. Debes abrir la caja primero.</p>
-  <form id="movementForm">
-   <div class="form-grid">
-    <div class="field"><label for="movementType">Tipo</label><select id="movementType" required><option value="ingreso">Ingreso</option><option value="egreso">Egreso</option></select></div>
-    <div class="field"><label for="movementAmount">Importe (Bs)</label><input id="movementAmount" type="number" min="0.01" step="0.01" placeholder="0,00" required></div>
-    <div class="field"><label for="paymentMethod">Método de pago</label><select id="paymentMethod" required><option value="efectivo">Efectivo</option><option value="qr">QR</option><option value="otro">Otros</option></select></div>
-    <div class="field"><label for="movementNote">Concepto</label><input id="movementNote" maxlength="160" placeholder="Ej. Compra de bolsas" required></div>
-   </div><div class="form-actions"><button class="primary" id="movementButton" type="submit">Guardar movimiento</button></div>
-  </form>
+ <section class="panel" id="openingPanel" style="margin-top:22px">
+  <h2>Apertura de caja</h2><p id="openingHelp">Solo el administrador puede abrir un turno de caja.</p>
+  <form id="openForm"><div class="form-grid">
+   <div class="field"><label for="cashBox">Caja</label><select id="cashBox" required></select></div>
+   <div class="field"><label for="openingAmount">Fondo inicial (Bs)</label><input id="openingAmount" type="number" min="0" step="0.01" value="0" required></div>
+   <div class="field full"><label for="openingNote">Nota (opcional)</label><input id="openingNote" maxlength="160" placeholder="Ej. Fondo del turno mañana"></div>
+  </div><div class="form-actions"><button class="primary" id="openButton" type="submit">Abrir caja</button></div></form>
  </section>
-<section class="panel" style="margin-top:16px">
- <div class="section-head"><div><h2>Movimientos de la caja actual</h2><p style="margin:6px 0 0">Aquí aparece todo lo que has registrado durante esta sesión.</p></div></div>
- <div class="table-wrap"><table><thead><tr><th>Fecha y hora</th><th>Tipo</th><th>Concepto</th><th>Método</th><th style="text-align:right">Importe</th></tr></thead><tbody id="movementRows"></tbody><tfoot id="movementTotals"></tfoot></table></div>
- <p class="footer-note">Los movimientos se muestran aquí automáticamente después de guardarlos.</p>
- <div class="form-actions" style="margin-top:16px"><button class="primary" id="showCloseButton" type="button">Ir a cerrar caja y arqueo →</button></div>
 </section>
-</div>
-</div>
-<div id="arqueoView" hidden>
-<section class="panel" id="closePanel" style="margin-top:16px">
- <div class="section-head"><div><h2>Cerrar caja y hacer arqueo</h2><p style="margin:6px 0 0">Cuenta el efectivo físico e introduce el total que encontraste.</p></div></div>
- <form id="closeForm">
-  <div class="form-grid">
-   <div class="field"><label for="countedCash">Efectivo contado (Bs)</label><input id="countedCash" type="number" min="0" step="0.01" placeholder="Importe contado" required></div>
-   <div class="field"><label for="countedQr">QR verificado (Bs)</label><input id="countedQr" type="number" min="0" step="0.01" placeholder="Total confirmado en la app bancaria" required></div>
-   <div class="field"><label for="closeNote">Nota de cierre</label><input id="closeNote" maxlength="160" placeholder="Observaciones del cierre"></div>
+<section id="movimientosView" hidden>
+ <section class="panel" style="margin-top:16px">
+  <h2>Registrar movimiento</h2><p>Registra ingresos o egresos que no correspondan a una venta automática. Debe existir una caja abierta.</p>
+  <form id="movementForm"><div class="form-grid">
+   <div class="field"><label for="movementType">Tipo</label><select id="movementType" required><option value="ingreso">Ingreso</option><option value="egreso">Egreso</option></select></div>
+   <div class="field"><label for="movementAmount">Importe (Bs)</label><input id="movementAmount" type="number" min="0.01" step="0.01" required></div>
+   <div class="field"><label for="paymentMethod">Método de pago</label><select id="paymentMethod" required></select></div>
+   <div class="field"><label for="movementNote">Concepto</label><input id="movementNote" maxlength="160" placeholder="Ej. Compra de bolsas" required></div>
+  </div><div class="form-actions"><button class="primary" id="movementButton" type="submit">Guardar movimiento</button></div></form>
+ </section>
+ <section class="panel" style="margin-top:16px">
+  <div class="section-head"><div><h2>Movimientos de la caja actual</h2><p style="margin:6px 0 0">Información sincronizada con Supabase.</p></div><button type="button" id="refreshMovements">Actualizar</button></div>
+  <div class="table-wrap"><table><thead><tr><th>Fecha y hora</th><th>Tipo</th><th>Concepto</th><th>Método</th><th style="text-align:right">Importe</th></tr></thead><tbody id="movementRows"></tbody></table></div>
+  <div class="form-actions" style="margin-top:16px"><button class="primary" type="button" id="goArqueo">Ir al arqueo →</button></div>
+ </section>
+</section>
+<section id="arqueoView" hidden>
+ <section class="panel" style="margin-top:16px">
+  <h2>Arqueo de caja</h2><p>El vendedor registra el dinero contado y el QR verificado. El administrador realiza el cierre definitivo.</p>
+  <form id="countForm"><div class="form-grid">
+   <div class="field"><label for="countedCash">Efectivo contado (Bs)</label><input id="countedCash" type="number" min="0" step="0.01" required></div>
+   <div class="field"><label for="countedQr">QR verificado (Bs)</label><input id="countedQr" type="number" min="0" step="0.01" required></div>
+   <div class="field full"><label for="countNote">Observaciones</label><textarea id="countNote" rows="3" maxlength="500" placeholder="Explica diferencias o novedades"></textarea></div>
   </div>
   <div class="grid" style="margin-top:16px">
-   <article class="card"><div class="label">Total esperado</div><div class="value" id="closeExpectedTotal">Bs 0,00</div></article>
-   <article class="card"><div class="label">Total contado/verificado</div><div class="value" id="closeCountedTotal">Bs 0,00</div></article>
-   <article class="card"><div class="label">Diferencia total</div><div class="value" id="closeDifferenceTotal">Bs 0,00</div></article>
-  </div><div class="form-actions"><button class="primary" id="closeButton" type="submit">Confirmar cierre de caja</button><button type="button" id="exportButton">Exportar movimientos CSV</button></div>
- </form>
- <div id="reconciliation" class="notice" hidden></div>
- <p class="footer-note">El arqueo compara el efectivo contado con el efectivo esperado. Transferencias, QR y tarjeta se registran en el historial, pero no se suman al efectivo físico.</p>
-</section>
-<section class="panel" style="margin-top:16px">
- <div class="section-head"><h2>Herramientas</h2><button id="clearButton" class="danger" type="button">Borrar datos locales</button></div>
- <p class="footer-note">Esta acción elimina el historial guardado en este navegador y requiere confirmación.</p>
-</section>
-</div>
-<div id="historialView" hidden>
- <section class="panel" style="margin-top:16px">
-  <div class="section-head"><div><h2>Historial de cajas cerradas</h2><p class="footer-note">Consulta los cierres anteriores y abre el detalle de todos los movimientos de cada turno.</p></div></div>
-  <div class="table-wrap"><table><thead><tr><th>Fecha y hora de cierre</th><th>Fondo inicial</th><th>Total esperado</th><th>Total verificado</th><th>Diferencia</th><th>Detalle</th></tr></thead><tbody id="historyRows"></tbody></table></div>
- </section>
- <section class="panel" id="historyDetailPanel" style="margin-top:16px" hidden>
-  <div class="section-head"><div><h2 id="historyDetailTitle">Detalle de caja</h2><p id="historyDetailSummary" class="footer-note"></p></div><button type="button" id="closeHistoryDetail" class="button">Cerrar detalle</button></div>
-  <div class="closure-summary-grid">
-   <article class="card"><div class="label">Ingresos</div><div class="value" id="detailIncome">Bs 0,00</div></article>
-   <article class="card"><div class="label">Egresos</div><div class="value" id="detailExpense">Bs 0,00</div></article>
-   <article class="card"><div class="label">Neto de movimientos</div><div class="value" id="detailNet">Bs 0,00</div></article>
-   <article class="card difference-card" id="detailDifferenceCard"><div class="label">Diferencia de caja</div><div class="value" id="detailDifference">Bs 0,00</div><span class="difference-status" id="detailDifferenceStatus">PENDIENTE</span></article>
+   <article class="card"><div class="label">Efectivo esperado</div><div class="value" id="countExpectedCash">Bs 0,00</div></article>
+   <article class="card"><div class="label">QR registrado</div><div class="value" id="countExpectedQr">Bs 0,00</div></article>
+   <article class="card"><div class="label">Diferencia de efectivo</div><div class="value" id="cashDifference">Bs 0,00</div></article>
+   <article class="card"><div class="label">Diferencia de QR</div><div class="value" id="qrDifference">Bs 0,00</div></article>
   </div>
-  <div class="table-wrap"><table><thead><tr><th>Fecha y hora</th><th>Tipo</th><th>Concepto</th><th>Método de pago</th><th>Importe</th></tr></thead><tbody id="historyDetailRows"></tbody><tfoot id="historyDetailTotals"></tfoot></table></div>
-  <section id="historyCloseNotePanel" class="closure-observation" hidden>
-   <div class="closure-observation-icon" aria-hidden="true">!</div>
-   <div><p class="closure-observation-label">OBSERVACIÓN DEL CIERRE</p><p id="historyCloseNote" class="closure-observation-text"></p></div>
-  </section>
-  <button type="button" id="exportHistoryButton" class="button" style="margin-top:14px">Exportar movimientos de esta caja (CSV)</button>
+  <div class="form-actions"><button class="primary" id="submitArqueo" type="submit">Enviar arqueo para revisión</button><button type="button" id="closeTurnButton">Cerrar definitivamente (administrador)</button></div>
+  </form>
+  <div class="notice">Enviar el arqueo no cierra la caja. El cierre definitivo solo está disponible para el administrador.</div>
  </section>
-</div>
+ <section class="panel" style="margin-top:16px">
+  <h2>Arqueos enviados</h2><div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Usuario</th><th>Efectivo</th><th>QR</th><th>Estado</th><th>Revisión</th></tr></thead><tbody id="arqueoRows"></tbody></table></div>
+ </section>
+ <section class="panel" id="reviewPanel" style="margin-top:16px" hidden>
+  <h2>Revisar arqueos pendientes</h2><p>Solo el administrador puede aprobar o rechazar una revisión.</p>
+  <div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Usuario</th><th>Efectivo</th><th>QR</th><th>Observaciones</th><th>Acciones</th></tr></thead><tbody id="pendingRows"></tbody></table></div>
+ </section>
+</section>
+<section id="historialView" hidden>
+ <section class="panel" style="margin-top:16px">
+  <div class="section-head"><div><h2>Historial de cajas</h2><p style="margin:6px 0 0">Turnos y cierres guardados en Supabase.</p></div><button type="button" id="refreshHistory">Actualizar</button></div>
+  <div class="table-wrap"><table><thead><tr><th>Apertura</th><th>Cierre</th><th>Fondo inicial</th><th>Efectivo contado</th><th>Estado</th></tr></thead><tbody id="historyRows"></tbody></table></div>
+ </section>
+</section>
 </main>
 <script>
 (() => {
- const STORAGE_KEY = "cajacontrol-caja-v1";
- const money = n => new Intl.NumberFormat("es-BO",{style:"currency",currency:"BOB"}).format(Number(n)||0);
- const dateText = value => new Date(value).toLocaleString("es-BO",{dateStyle:"short",timeStyle:"short"});
+ "use strict";
+ const SUPABASE_URL = "https://fpsdnshhyosmqccdinsn.supabase.co";
+ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_BrcHw-AXiBBUxTW4E1Yz_gB3CAF_ej";
  const $ = id => document.getElementById(id);
- let data = loadData();
- function blankData(){return {current:null,closures:[]};}
- function loadData(){try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw)return blankData();const parsed=JSON.parse(raw);return {current:parsed.current||null,closures:Array.isArray(parsed.closures)?parsed.closures:[]};}catch(e){return blankData();}}
- function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));}
- function totals(session){
-  const movements=session?.movements||[];
-  const sum=(type,method=null)=>movements.filter(m=>m.type===type&&(!method||m.method===method)).reduce((a,m)=>a+m.amount,0);
-  const opening=Number(session?.openingAmount)||0;
-  const cashIncome=sum("ingreso","efectivo"),cashExpense=sum("egreso","efectivo");
-  const net=m=>sum("ingreso",m)-sum("egreso",m);
-  return {opening,income:sum("ingreso"),expense:sum("egreso"),cashIncome,cashExpense,expected:opening+cashIncome-cashExpense,
-   qrExpected:net("qr"),otherExpected:net("otro")};
+ const money = n => new Intl.NumberFormat("es-BO",{style:"currency",currency:"BOB"}).format(Number(n)||0);
+ const dateText = v => v ? new Date(v).toLocaleString("es-BO",{dateStyle:"short",timeStyle:"short"}) : "—";
+ const state = {client:null,user:null,profile:null,boxes:[],methods:[],turn:null,movements:[],arqueos:[],history:[]};
+ function message(text,kind="ok"){const el=$("message");el.className=kind;el.textContent=text;el.style.display="block";window.scrollTo({top:0,behavior:"smooth"});}
+ function clearMessage(){const el=$("message");el.className="";el.textContent="";el.style.display="none";}
+ function fail(error,context=""){console.error(context,error);message((context?context+": ":"")+(error?.message||String(error)||"Ocurrió un error."),"error");}
+ function role(){return String(state.profile?.rol||"").trim().toLowerCase();}
+ function isAdmin(){return ["admin","administrador"].includes(role());}
+ function companyId(){return state.profile?.empresa_id;}
+ function currentTurn(){return state.turn;}
+ function selectedMethod(){return state.methods.find(m=>m.id===$("paymentMethod").value);}
+ function isCash(method){return !!method?.es_efectivo;}
+ async function init(){
+  if(!window.supabase?.createClient){message("No se pudo cargar el cliente de Supabase. Comprueba tu conexión a Internet.","error");return;}
+  state.client=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+  const {data:{session},error:sessionError}=await state.client.auth.getSession();
+  if(sessionError)throw sessionError;
+  if(!session?.user){message("Tu sesión no está iniciada. Inicia sesión desde CajaControl y vuelve a abrir este módulo.","error");disableAll();$("status").textContent="Sin sesión";return;}
+  state.user=session.user;
+  const {data:profile,error}=await state.client.from("perfiles").select("id,empresa_id,nombre,rol,activo").eq("id",state.user.id).eq("activo",true).maybeSingle();
+  if(error)throw error;
+  if(!profile){message("No se encontró un perfil activo asociado a tu usuario.","error");disableAll();return;}
+  state.profile=profile;
+  await loadBase();
+  await loadTurnAndData();
+  await loadHistory();
+  renderPermissions();
  }
- function updateClosePreview(){
-  if(!data.current)return;
-  const t=totals(data.current);
-   const closeNoteValue=$("closeNote").value.trim();
-  const exp=[t.expected,t.qrExpected||0,t.otherExpected||0];
-  const ids=["countedCash","countedQr"];
-  const vals=ids.map(id=>$(id)&&$(id).value!==""?Number($(id).value):0);
-  $("closeExpectedTotal").textContent=money(exp.reduce((a,b)=>a+b,0));
-  $("closeCountedTotal").textContent=money(vals.reduce((a,b)=>a+b,0));
-  $("closeDifferenceTotal").textContent=money(vals.reduce((a,b)=>a+b,0)-exp.reduce((a,b)=>a+b,0));
+ function disableAll(){document.querySelectorAll("form button,form input,form select,form textarea").forEach(x=>x.disabled=true);}
+ async function loadBase(){
+  const c=state.client,co=companyId();
+  const [{data:boxes,error:be},{data:methods,error:me}]=await Promise.all([
+   c.from("cajas").select("id,empresa_id,nombre,activa").eq("empresa_id",co).eq("activa",true).order("nombre"),
+   c.from("metodos_pago").select("id,empresa_id,nombre,es_efectivo,activo").eq("empresa_id",co).eq("activo",true).order("nombre")
+  ]);
+  if(be)throw be;if(me)throw me;
+  state.boxes=boxes||[];state.methods=methods||[];
+  $("cashBox").innerHTML=state.boxes.map(b=>`<option value="${b.id}">${escapeHtml(b.nombre)}</option>`).join("");
+  $("paymentMethod").innerHTML=state.methods.map(m=>`<option value="${m.id}">${escapeHtml(m.nombre)}</option>`).join("");
+  if(!state.boxes.length)$("cashBox").innerHTML='<option value="">No hay cajas activas</option>';
+  if(!state.methods.length)$("paymentMethod").innerHTML='<option value="">No hay métodos de pago activos</option>';
+ }
+ function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+ async function loadTurnAndData(){
+  const c=state.client,co=companyId();
+  const {data:turns,error}=await c.from("turnos_caja").select("id,empresa_id,caja_id,abierto_por,cerrado_por,monto_inicial,monto_efectivo_contado,abierto_en,cerrado_en,estado,observaciones,cajas(nombre)").eq("empresa_id",co).eq("estado","abierta").is("cerrado_en",null).order("abierto_en",{ascending:false}).limit(1);
+  if(error)throw error;
+  state.turn=turns?.[0]||null;
+  state.movements=[];
+  if(state.turn){
+   const {data:movs,error:moveError}=await c.from("movimientos_caja").select("id,empresa_id,turno_caja_id,usuario_id,tipo,monto,motivo,metodo_pago_id,creado_en,metodos_pago(nombre,es_efectivo)").eq("turno_caja_id",state.turn.id).order("creado_en",{ascending:true});
+   if(moveError)throw moveError;
+   state.movements=movs||[];
+  }
+  await loadArqueos();
+  render();
+ }
+ async function loadArqueos(){
+  if(!state.turn){state.arqueos=[];return;}
+  const {data,error}=await state.client.from("arqueos_caja").select("id,turno_caja_id,registrado_por,efectivo_contado,qr_verificado,observaciones,estado,revisado_por,revisado_en,creado_en").eq("turno_caja_id",state.turn.id).order("creado_en",{ascending:false});
+  if(error)throw error;
+  state.arqueos=data||[];
+  renderArqueos();
+ }
+ function calc(){
+  const turn=state.turn,m=state.movements;
+  let income=0,expense=0,cashIncome=0,cashExpense=0,qrNet=0,otherNet=0;
+  for(const x of m){
+   const amount=Number(x.monto)||0,method=x.metodos_pago||state.methods.find(a=>a.id===x.metodo_pago_id);
+   const sign=x.tipo==="ingreso"?1:-1;
+   if(x.tipo==="ingreso")income+=amount;else expense+=amount;
+   if(isCash(method)){if(sign>0)cashIncome+=amount;else cashExpense+=amount;}
+   else if(String(method?.nombre||"").toLowerCase().includes("qr"))qrNet+=sign*amount;
+   else otherNet+=sign*amount;
+  }
+  const opening=Number(turn?.monto_inicial)||0;
+  return {opening,income,expense,expected:opening+cashIncome-cashExpense,qrNet,otherNet};
  }
  function render(){
-  const s=data.current,t=totals(s);
-  $("status").textContent=s?"Caja abierta":"Caja cerrada";
-  $("status").classList.toggle("closed",!s);
-  $("openingTotal").textContent=money(t.opening);
-  $("incomeTotal").textContent=money(t.income);
-  $("expenseTotal").textContent=money(t.expense);
-  $("expectedTotal").textContent=money(t.expected);
-  if($("closeExpectedTotal"))updateClosePreview();
-  $("openTitle").textContent=s?"Caja abierta":"Abrir caja";
-  $("openingAmount").disabled=!!s;
-  $("openingNote").disabled=!!s;
-  $("openButton").disabled=!!s;
-  $("movementButton").disabled=!s;
-  $("movementType").disabled=!s;$("movementAmount").disabled=!s;$("paymentMethod").disabled=!s;$("movementNote").disabled=!s;
-  $("closeButton").disabled=!s;$("countedCash").disabled=!s;$("closeNote").disabled=!s;
-  if($("countedQr"))$("countedQr").disabled=!s;
-  $("showCloseButton").disabled=!s;
+  const turn=state.turn,t=calc();
+  $("status").textContent=turn?`Caja abierta${turn.cajas?.nombre?" · "+turn.cajas.nombre:""}`:"Caja cerrada";
+  $("status").classList.toggle("closed",!turn);
+  $("openingTotal").textContent=money(t.opening);$("incomeTotal").textContent=money(t.income);$("expenseTotal").textContent=money(t.expense);$("expectedTotal").textContent=money(t.expected);
+  $("openButton").disabled=!isAdmin()||!!turn||!state.boxes.length;
+  $("cashBox").disabled=!isAdmin()||!!turn;
+  $("openingAmount").disabled=!isAdmin()||!!turn;$("openingNote").disabled=!isAdmin()||!!turn;
+  $("movementButton").disabled=!turn||!state.methods.length;
+  $("movementType").disabled=!turn;$("movementAmount").disabled=!turn;$("movementNote").disabled=!turn;$("paymentMethod").disabled=!turn;
+  $("submitArqueo").disabled=!turn;
+  $("closeTurnButton").hidden=!isAdmin();
+  $("countExpectedCash").textContent=money(t.expected);$("countExpectedQr").textContent=money(t.qrNet);
+  $("countedCash").disabled=!turn;$("countedQr").disabled=!turn;
+  const cashVal=$("countedCash").value===""?0:Number($("countedCash").value),qrVal=$("countedQr").value===""?0:Number($("countedQr").value);
+  $("cashDifference").textContent=money(cashVal-t.expected);$("qrDifference").textContent=money(qrVal-t.qrNet);
   $("movementRows").innerHTML="";
-  if(!s||!s.movements.length){$("movementRows").innerHTML='<tr><td colspan="5" class="empty">Todavía no hay movimientos en la caja actual.</td></tr>';}
-  else s.movements.slice().reverse().forEach(m=>{
+  if(!turn||!state.movements.length)$("movementRows").innerHTML='<tr><td colspan="5" class="empty">No hay movimientos para mostrar en esta caja.</td></tr>';
+  else state.movements.slice().reverse().forEach(m=>{
    const tr=document.createElement("tr");
-   const vals=[dateText(m.date),m.type==="ingreso"?"Ingreso":"Egreso",m.note,m.method.toUpperCase()];
-   vals.forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td);});
-   const amount=document.createElement("td");amount.className="amount "+(m.type==="ingreso"?"positive":"negative");amount.textContent=(m.type==="ingreso"?"+":"−")+money(m.amount);tr.appendChild(amount);$("movementRows").appendChild(tr);
+   [dateText(m.creado_en),m.tipo==="ingreso"?"Ingreso":"Egreso",m.motivo||"—",m.metodos_pago?.nombre||"—"].forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td);});
+   const td=document.createElement("td");td.className="amount "+(m.tipo==="ingreso"?"positive":"negative");td.textContent=(m.tipo==="ingreso"?"+":"−")+money(m.monto);tr.appendChild(td);$("movementRows").appendChild(tr);
   });
-  const allMovements=s?.movements||[];
-  const sumMovement=(type,method)=>allMovements.filter(m=>m.type===type&&m.method===method).reduce((a,m)=>a+m.amount,0);
-  const cashIn=sumMovement("ingreso","efectivo"), qrIn=sumMovement("ingreso","qr"), otherIn=sumMovement("ingreso","otro");
-  const cashOut=sumMovement("egreso","efectivo"), qrOut=sumMovement("egreso","qr"), otherOut=sumMovement("egreso","otro");
-  const totalIncome=cashIn+qrIn+otherIn, totalExpense=cashOut+qrOut+otherOut, netMovements=totalIncome-totalExpense;
-  $("movementTotals").innerHTML=`
-   <tr><td colspan="2">Totales por método</td><td colspan="2">💵 Efectivo: ingresos ${money(cashIn)} · egresos ${money(cashOut)}<br>📱 QR: ingresos ${money(qrIn)} · egresos ${money(qrOut)}<br>Otros: ingresos ${money(otherIn)} · egresos ${money(otherOut)}</td><td class="amount">Ingresos: ${money(totalIncome)}<br>Egresos: ${money(totalExpense)}</td></tr>
-   <tr><td colspan="4">Neto de movimientos</td><td class="amount ${netMovements>=0?"positive":"negative"}">${money(netMovements)}</td></tr>`;
-  $("historyRows").innerHTML="";
-  if(!data.closures.length)$("historyRows").innerHTML='<tr><td colspan="6" class="empty">Aún no hay cajas cerradas. Cuando cierres una caja, aparecerá aquí con todos sus movimientos.</td></tr>';
-  else data.closures.slice().reverse().forEach((c,reverseIndex)=>{
-   const closureIndex=data.closures.length-1-reverseIndex;
+  renderArqueos();
+ }
+ function renderPermissions(){
+  $("openingHelp").textContent=isAdmin()?"Abre la caja seleccionada antes de comenzar el turno.":"Solo el administrador puede abrir o cerrar definitivamente la caja.";
+  if(!isAdmin()){$("openForm").querySelectorAll("input,select,button").forEach(el=>el.disabled=true);$("closeTurnButton").hidden=true;}
+  $("reviewPanel").hidden=!isAdmin();
+ }
+ function renderArqueos(){
+  const rows=$("arqueoRows"),pending=$("pendingRows");rows.innerHTML="";pending.innerHTML="";
+  if(!state.arqueos.length)rows.innerHTML='<tr><td colspan="6" class="empty">Todavía no hay arqueos registrados.</td></tr>';
+  state.arqueos.forEach(a=>{
    const tr=document.createElement("tr");
-   [dateText(c.closedAt),money(c.openingAmount??c.opening),money(c.expected),money(c.counted),money(c.difference)].forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;if(i===4)td.className=Number(c.difference)===0?"positive":Number(c.difference)<0?"negative":"positive";tr.appendChild(td);});
-   const action=document.createElement("td");const btn=document.createElement("button");btn.type="button";btn.className="button";btn.textContent="Ver movimientos";btn.addEventListener("click",()=>showClosureDetail(closureIndex));action.appendChild(btn);tr.appendChild(action);
+   [dateText(a.creado_en),a.registrado_por===state.user.id?"Tú":String(a.registrado_por).slice(0,8)+"…",money(a.efectivo_contado),money(a.qr_verificado),a.estado,dateText(a.revisado_en)].forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td);});
+   rows.appendChild(tr);
+   if(isAdmin()&&a.estado==="pendiente"){
+    const pr=document.createElement("tr");
+    [dateText(a.creado_en),String(a.registrado_por).slice(0,8)+"…",money(a.efectivo_contado),money(a.qr_verificado),a.observaciones||"—"].forEach(v=>{const td=document.createElement("td");td.textContent=v;pr.appendChild(td);});
+    const actions=document.createElement("td");
+    for(const decision of ["aprobado","rechazado"]){const b=document.createElement("button");b.textContent=decision==="aprobado"?"Aprobar":"Rechazar";b.className=decision==="aprobado"?"primary":"danger";b.style.marginRight="6px";b.addEventListener("click",()=>reviewArqueo(a.id,decision));actions.appendChild(b);}
+    pr.appendChild(actions);pending.appendChild(pr);
+   }
+  });
+  if(isAdmin()&&!pending.children.length)pending.innerHTML='<tr><td colspan="6" class="empty">No hay arqueos pendientes.</td></tr>';
+ }
+ async function loadHistory(){
+  const {data,error}=await state.client.from("turnos_caja").select("id,monto_inicial,monto_efectivo_contado,abierto_en,cerrado_en,estado,cajas(nombre)").eq("empresa_id",companyId()).order("abierto_en",{ascending:false}).limit(100);
+  if(error)throw error;state.history=data||[];
+  $("historyRows").innerHTML="";
+  if(!state.history.length){$("historyRows").innerHTML='<tr><td colspan="5" class="empty">Todavía no hay turnos registrados.</td></tr>';return;}
+  state.history.forEach(t=>{
+   const tr=document.createElement("tr");
+   [dateText(t.abierto_en),dateText(t.cerrado_en),money(t.monto_inicial),t.monto_efectivo_contado==null?"—":money(t.monto_efectivo_contado),t.estado].forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td);});
    $("historyRows").appendChild(tr);
   });
-  $("reconciliation").hidden=true;
  }
- let selectedClosureIndex=null;
- function showClosureDetail(index){
-  const c=data.closures[index];if(!c)return;selectedClosureIndex=index;
-  $("historyDetailPanel").hidden=false;
-  $("historyDetailTitle").textContent="Detalle de caja — "+dateText(c.closedAt);
-  $("historyDetailSummary").textContent="Cierre: "+dateText(c.closedAt);
-  const movements=Array.isArray(c.movements)?c.movements:[];
-  const sum=(type)=>movements.filter(m=>m.type===type).reduce((a,m)=>a+(Number(m.amount)||0),0);
-  const income=sum("ingreso"),expense=sum("egreso");
-  $("detailIncome").textContent=money(income);$("detailExpense").textContent=money(expense);$("detailNet").textContent=money(income-expense);
-  const savedDifference=Number(c.difference)||0;
-  const differenceCard=$("detailDifferenceCard");
-  differenceCard.classList.remove("is-short","is-over","is-balanced");
-  $("detailDifference").textContent=(savedDifference>0?"+":"")+money(savedDifference);
-  if(savedDifference<0){differenceCard.classList.add("is-short");$("detailDifferenceStatus").textContent="FALTANTE";}
-  else if(savedDifference>0){differenceCard.classList.add("is-over");$("detailDifferenceStatus").textContent="SOBRANTE";}
-  else{differenceCard.classList.add("is-balanced");$("detailDifferenceStatus").textContent="CAJA CUADRADA";}
-  $("historyDetailRows").innerHTML="";
-  if(!movements.length)$("historyDetailRows").innerHTML='<tr><td colspan="5" class="empty">Este cierre no contiene movimientos guardados en su registro.</td></tr>';
-  else movements.slice().reverse().forEach(m=>{
-   const tr=document.createElement("tr");
-   const vals=[dateText(m.createdAt||m.date||c.closedAt),m.type==="ingreso"?"Ingreso":"Egreso",m.concept||m.note||"—",String(m.method||"—").toUpperCase(),(m.type==="egreso"?"−":"+")+money(m.amount)];
-   vals.forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;if(i===4)td.className=m.type==="egreso"?"negative":"positive";tr.appendChild(td);});
-   $("historyDetailRows").appendChild(tr);
-  });
-  $("historyCloseNotePanel").hidden=!c.closeNote;
-  $("historyCloseNote").textContent=c.closeNote||"";
-  const methodNet=(method,type)=>movements.filter(m=>m.type===type&&m.method===method).reduce((a,m)=>a+(Number(m.amount)||0),0);
-  $("historyDetailTotals").innerHTML=`<tr><td colspan="2">Totales por método</td><td colspan="2">Efectivo: ingresos ${money(methodNet("efectivo","ingreso"))} · egresos ${money(methodNet("efectivo","egreso"))}<br>QR: ingresos ${money(methodNet("qr","ingreso"))} · egresos ${money(methodNet("qr","egreso"))}<br>Otros: ingresos ${money(methodNet("otro","ingreso"))} · egresos ${money(methodNet("otro","egreso"))}</td><td>Ingresos: ${money(income)}<br>Egresos: ${money(expense)}</td></tr>`;
+ async function openCash(e){
+  e.preventDefault();clearMessage();
+  if(!isAdmin())return message("Solo el administrador puede abrir la caja.","error");
+  if(state.turn)return message("Ya existe una caja abierta.","error");
+  const boxId=$("cashBox").value,amount=Number($("openingAmount").value),note=$("openingNote").value.trim();
+  if(!boxId||!Number.isFinite(amount)||amount<0)return message("Selecciona una caja e introduce un fondo válido.","error");
+  const {data,error}=await state.client.rpc("abrir_caja",{p_caja_id:boxId,p_monto_inicial:amount,p_observaciones:note||null});
+  if(error)throw error;
+  message("Caja abierta correctamente.");
+  $("openingAmount").value="0";$("openingNote").value="";
+  await loadTurnAndData();await loadHistory();
  }
- $("closeHistoryDetail").addEventListener("click",()=>{$("historyDetailPanel").hidden=true;});
- $("exportHistoryButton").addEventListener("click",()=>{
-  if(selectedClosureIndex===null)return;const c=data.closures[selectedClosureIndex];if(!c)return;
-  const rows=[["Fecha y hora","Tipo","Concepto","Método","Importe"],...(c.movements||[]).map(m=>[dateText(m.createdAt||m.date||c.closedAt),m.type,m.concept||"",m.method||"",m.amount])];
-  const csv=rows.map(row=>row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\\n");
-  const blob=new Blob(["\\ufeff"+csv],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="movimientos-caja-"+(c.closedAt||"cierre").slice(0,10)+".csv";a.click();URL.revokeObjectURL(url);
- });
+ async function addMovement(e){
+  e.preventDefault();clearMessage();
+  if(!state.turn)return message("No hay una caja abierta.","error");
+  const amount=Number($("movementAmount").value),type=$("movementType").value,note=$("movementNote").value.trim(),method=$("paymentMethod").value;
+  if(!Number.isFinite(amount)||amount<=0||!note||!method)return message("Completa el importe, método y concepto.","error");
+  const {error}=await state.client.rpc("registrar_movimiento_caja",{p_turno_id:state.turn.id,p_tipo:type,p_monto:amount,p_motivo:note,p_metodo_pago_id:method});
+  if(error)throw error;
+  $("movementAmount").value="";$("movementNote").value="";
+  message("Movimiento guardado en Supabase.");
+  await loadTurnAndData();
+ }
+ async function submitCount(e){
+  e.preventDefault();clearMessage();
+  if(!state.turn)return message("No hay una caja abierta.","error");
+  const cash=Number($("countedCash").value),qr=Number($("countedQr").value),note=$("countNote").value.trim();
+  if(!Number.isFinite(cash)||cash<0||!Number.isFinite(qr)||qr<0)return message("Introduce importes válidos; usa 0 si no corresponde.","error");
+  const {data,error}=await state.client.rpc("registrar_arqueo",{p_turno_id:state.turn.id,p_efectivo:cash,p_qr:qr,p_observaciones:note||null});
+  if(error)throw error;
+  message("Arqueo enviado para revisión. La caja sigue abierta.");
+  $("countNote").value="";
+  await loadArqueos();
+ }
+ async function reviewArqueo(id,decision){
+  clearMessage();
+  const note=prompt("Observación de la revisión (opcional):")||null;
+  const {error}=await state.client.rpc("revisar_arqueo",{p_arqueo_id:id,p_decision:decision,p_observaciones:note});
+  if(error)throw error;
+  message("Arqueo "+decision+".");
+  await loadArqueos();
+ }
+ async function closeCash(){
+  clearMessage();
+  if(!isAdmin())return message("Solo el administrador puede cerrar definitivamente la caja.","error");
+  if(!state.turn)return message("No hay una caja abierta.","error");
+  const pending=state.arqueos.some(a=>a.estado==="pendiente");
+  if(pending&&!confirm("Hay arqueos pendientes. ¿Deseas continuar con el cierre definitivo?"))return;
+  const raw=$("countedCash").value;
+  if(raw===""||!Number.isFinite(Number(raw))||Number(raw)<0)return message("Introduce el efectivo contado antes de cerrar.","error");
+  const qr=$("countedQr").value===""?0:Number($("countedQr").value);
+  const note=$("countNote").value.trim();
+  if(!confirm("¿Confirmas el cierre definitivo de esta caja? Esta operación cerrará el turno."))return;
+  // Store the QR verification in the closing observations because turnos_caja currently has no QR-count column.
+  const closeNote=[note,`QR verificado al cierre: Bs ${qr.toFixed(2)}`].filter(Boolean).join("\n");
+  const {error}=await state.client.rpc("cerrar_caja",{p_turno_id:state.turn.id,p_efectivo_contado:Number(raw),p_observaciones:closeNote||null});
+  if(error)throw error;
+  message("Caja cerrada definitivamente.");
+  $("countedCash").value="";$("countedQr").value="";$("countNote").value="";
+  await loadTurnAndData();await loadHistory();
+ }
  function setView(view){
-  if(view!=="abrir" && view!=="movimientos" && view!=="arqueo" && view!=="historial")return;
-  if(view==="arqueo"&&!data.current){alert("Primero debes abrir la caja.");return;}
-  $("abrirView").hidden=view!=="abrir";
-  $("movimientosView").hidden=view!=="movimientos";
-  $("arqueoView").hidden=view!=="arqueo";
-  $("historialView").hidden=view!=="historial";
-  if(view==="historial")$("historyDetailPanel").hidden=true;
+  for(const v of ["abrir","movimientos","arqueo","historial"])$(v+"View").hidden=v!==view;
   document.querySelectorAll(".view-tab").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
-  if(view==="arqueo")updateClosePreview();
  }
  document.querySelectorAll(".view-tab").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
- if($("showCloseButton"))$("showCloseButton").addEventListener("click",()=>setView("arqueo"));
- $("openForm").addEventListener("submit",e=>{
-  e.preventDefault();if(data.current)return;
-  const amount=Number($("openingAmount").value);
-  if(!Number.isFinite(amount)||amount<0){alert("Introduce un fondo inicial válido.");return;}
-  data.current={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),openedAt:new Date().toISOString(),openingAmount:amount,openingNote:$("openingNote").value.trim(),movements:[]};
-  save();render();alert("Caja abierta correctamente.");
- });
- $("movementForm").addEventListener("submit",e=>{
-  e.preventDefault();if(!data.current){alert("Primero debes abrir la caja.");return;}
-  const amount=Number($("movementAmount").value),type=$("movementType").value,note=$("movementNote").value.trim();
-  if(!Number.isFinite(amount)||amount<=0||!note){alert("Completa un importe válido y el concepto.");return;}
-  data.current.movements.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),date:new Date().toISOString(),type,amount,method:$("paymentMethod").value,note});
-  save();$("movementAmount").value="";$("movementNote").value="";render();
- });
- ["countedCash","countedQr"].forEach(id=>$(id)?.addEventListener("input",updateClosePreview));
- $("closeForm").addEventListener("submit",e=>{
-  e.preventDefault();if(!data.current)return;
-  const counted=[Number($("countedCash").value),Number($("countedQr").value)];
-  if(counted.some(v=>!Number.isFinite(v)||v<0)){alert("Introduce importes válidos. Si no hubo pagos en un método, escribe 0.");return;}
-  const t=totals(data.current);
-  const closeNoteValue=$("closeNote").value.trim();
-  const expected=[t.expected,t.qrExpected||0];
-  const expectedTotal=expected.reduce((a,b)=>a+b,0),countedTotal=counted.reduce((a,b)=>a+b,0);
-  const methodResults=["Efectivo","QR"].map((method,i)=>({method,expected:Math.round(expected[i]*100)/100,counted:Math.round(counted[i]*100)/100,difference:Math.round((counted[i]-expected[i])*100)/100}));
-  const difference=Math.round((countedTotal-expectedTotal)*100)/100;
-  if(methodResults.some(r=>r.difference!==0)&&!closeNoteValue){alert("Hay una diferencia. Escribe una nota de cierre antes de confirmar.");$("closeNote").focus();return;}
-  if(!confirm("¿Confirmas cerrar la caja y guardar el arqueo?"))return;
-  data.closures.push({...data.current,closedAt:new Date().toISOString(),expected:Math.round(expectedTotal*100)/100,counted:Math.round(countedTotal*100)/100,difference,methodResults,closeNote:$("closeNote").value.trim()});
-  data.current=null;save();render();
-  const box=$("reconciliation");box.hidden=false;
-  const mismatches=methodResults.filter(r=>r.difference!==0);
-  box.textContent=mismatches.length===0?"Cierre correcto: efectivo y QR coinciden.":mismatches.map(r=>`${r.method}: ${r.difference<0?"faltante":"sobrante"} de ${money(Math.abs(r.difference))}`).join(" · ");
-  box.scrollIntoView({behavior:"smooth",block:"center"});
-  ["countedCash","countedQr"].forEach(id=>$(id).value="");$("closeNote").value="";
- });
- $("exportButton").addEventListener("click",()=>{
-  const s=data.current;if(!s){alert("No hay una caja abierta para exportar. Los cierres históricos quedan guardados en esta demo.");return;}
-  const rows=[["Fecha","Tipo","Concepto","Método","Importe Bs"],...s.movements.map(m=>[dateText(m.date),m.type,m.note,m.method,m.amount])];
-  const csv="\uFEFF"+rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\r\n");
-  const blob=new Blob([csv],{type:"text/csv;charset=utf-8;"}),url=URL.createObjectURL(blob),a=document.createElement("a");
-  a.href=url;a.download="cajacontrol-movimientos.csv";a.click();URL.revokeObjectURL(url);
- });
- $("clearButton").addEventListener("click",()=>{
-  if(!confirm("¿Seguro que deseas borrar todos los datos de caja guardados en ESTE navegador? Esta acción no se puede deshacer."))return;
-  data=blankData();save();render();$("reconciliation").hidden=true;
- });
- render();
+ $("openForm").addEventListener("submit",e=>run(openCash(e)));
+ $("movementForm").addEventListener("submit",e=>run(addMovement(e)));
+ $("countForm").addEventListener("submit",e=>run(submitCount(e)));
+ $("closeTurnButton").addEventListener("click",()=>run(closeCash()));
+ $("refreshMovements").addEventListener("click",()=>run(loadTurnAndData()));
+ $("refreshHistory").addEventListener("click",()=>run(loadHistory()));
+ $("goArqueo").addEventListener("click",()=>setView("arqueo"));
+ ["countedCash","countedQr"].forEach(id=>$(id).addEventListener("input",()=>{const t=calc();$("cashDifference").textContent=money((Number($("countedCash").value)||0)-t.expected);$("qrDifference").textContent=money((Number($("countedQr").value)||0)-t.qrNet);}));
+ async function run(promise){try{await promise;}catch(e){fail(e);}}
+ init().catch(e=>fail(e,"No se pudo iniciar Caja y Arqueo"));
 })();
 </script>
 </body>
