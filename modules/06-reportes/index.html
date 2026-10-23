@@ -1,0 +1,119 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes | CajaControl</title>
+    <style>
+        :root {
+            --background: #08090c;
+            --surface: #11141b;
+            --border: rgba(255,255,255,.08);
+            --text: #f4f5f7;
+            --muted: #9298a6;
+            --accent: #b7f36b;
+            --accent-dark: #26391b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            min-height: 100vh;
+            padding: 30px;
+            background: var(--background);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .container { max-width: 1100px; margin: auto; }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .eyebrow {
+            color: var(--muted);
+            font-size: 11px;
+            letter-spacing: 2px;
+        }
+
+        h1 { margin-top: 8px; font-size: 30px; }
+
+        .button {
+            display: inline-block;
+            padding: 11px 16px;
+            color: var(--text);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            text-decoration: none;
+        }
+
+        .panel {
+            margin-top: 25px;
+            padding: 25px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+        }
+
+        .panel h2 { margin-bottom: 10px; font-size: 18px; }
+
+        .panel p {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .notice {
+            margin-top: 20px;
+            padding: 15px;
+            background: var(--accent-dark);
+            border-radius: 12px;
+            color: var(--accent);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 18px; }
+            h1 { font-size: 25px; }
+            .panel { padding: 18px; }
+        }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <header>
+            <div>
+                <div class="eyebrow">CAJACONTROL / MÓDULOS</div>
+                <h1>Reportes</h1>
+            </div>
+
+            <a class="button" href="../02-dashboard/index.html">
+                ← Volver al dashboard
+            </a>
+        </header>
+
+        <section class="panel">
+            <h2>Informes del negocio</h2>
+            <p>
+                Aquí podrás consultar información sobre ventas, ingresos,
+                egresos, cierres de caja e inventario.
+            </p>
+
+            <div class="notice">
+                La página está creada. En la siguiente etapa implementaremos
+                los reportes con datos reales de CajaControl.
+            </div>
+        </section>
+    </main>
+</body>
+</html>
+```
