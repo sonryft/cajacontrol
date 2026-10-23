@@ -23,6 +23,26 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
 .table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:620px}th,td{text-align:left;padding:12px 10px;border-bottom:1px solid var(--border);font-size:13px;white-space:nowrap}th{font-size:11px;color:var(--muted);font-weight:600}td.amount{text-align:right;font-variant-numeric:tabular-nums}.empty{text-align:center;color:var(--muted);padding:28px 10px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:15px}.section-head h2{margin:0}.positive{color:var(--accent)}.negative{color:var(--danger)}[hidden]{display:none!important}.view-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px;border-bottom:1px solid var(--border);padding-bottom:12px}.view-tab{font-weight:700}.view-tab.active{background:var(--accent);color:#11170b;border-color:transparent}.footer-note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:15px}
 @media(max-width:850px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.columns{grid-template-columns:1fr}}
 @media(max-width:520px){body{padding:14px}.grid{gap:9px}.card{padding:14px}.card .value{font-size:21px}.panel{padding:15px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}h1{font-size:25px}}
+
+ .closure-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:16px 0}
+ .closure-summary-grid .card{min-width:0}
+ .difference-card{border-color:rgba(255,90,90,.55);background:rgba(120,25,30,.16)}
+ .difference-card .value{font-size:clamp(22px,2vw,30px)}
+ .difference-card.is-short{border-color:#ef4444;background:rgba(127,29,29,.24)}
+ .difference-card.is-over{border-color:#f59e0b;background:rgba(120,70,10,.20)}
+ .difference-card.is-balanced{border-color:#65a30d;background:rgba(54,83,20,.18)}
+ .difference-status{display:inline-block;margin-top:6px;padding:4px 9px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.04em}
+ .is-short .difference-status{background:#7f1d1d;color:#fecaca}
+ .is-over .difference-status{background:#78350f;color:#fde68a}
+ .is-balanced .difference-status{background:#365314;color:#d9f99d}
+ .closure-observation{margin:16px 0;padding:20px 22px;border:1px solid #ef4444;border-radius:14px;background:rgba(127,29,29,.20);display:flex;gap:16px;align-items:flex-start}
+ .closure-observation[hidden]{display:none}
+ .closure-observation-icon{flex:0 0 44px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:#ef4444;color:#fff;font-size:24px;font-weight:900}
+ .closure-observation-label{margin:0 0 8px;color:#fca5a5;font-size:13px;font-weight:800;letter-spacing:.12em}
+ .closure-observation-text{font-size:18px;line-height:1.6;overflow-wrap:anywhere;color:var(--text,#f4f5f7)}
+ @media(max-width:850px){.closure-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+ @media(max-width:520px){.closure-summary-grid{grid-template-columns:1fr}.closure-observation{padding:16px}.closure-observation-text{font-size:16px}}
+
 </style>
 </head>
 <body>
@@ -32,10 +52,12 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center"><span id="status" class="status closed">Caja cerrada</span><a class="button" href="../02-dashboard/index.html">← Dashboard</a></div>
 </header>
 <nav class="view-tabs" aria-label="Secciones de caja">
- <button type="button" class="view-tab active" data-view="caja">Caja</button>
+ <button type="button" class="view-tab active" data-view="abrir">Abrir caja</button>
+ <button type="button" class="view-tab" data-view="movimientos">Movimientos</button>
  <button type="button" class="view-tab" data-view="arqueo">Cerrar caja y arqueo</button>
+ <button type="button" class="view-tab" data-view="historial">Historial de cajas</button>
 </nav>
-<div id="cajaView">
+<div id="abrirView">
 <section class="grid">
  <article class="card"><div class="label">Fondo inicial</div><div class="value" id="openingTotal">Bs 0,00</div><div class="sub">Dinero declarado al abrir</div></article>
  <article class="card"><div class="label">Ingresos de caja</div><div class="value" id="incomeTotal">Bs 0,00</div><div class="sub">Ingresos manuales registrados</div></article>
@@ -52,6 +74,8 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
   </form>
   <div class="notice">Esta primera versión guarda los datos en este navegador. Todavía no sincroniza con otros dispositivos ni usuarios; eso lo conectaremos después a la base de datos.</div>
  </section>
+</div>
+<div id="movimientosView">
 <section class="panel" id="movementPanel" style="margin-top:16px">
   <h2>Registrar movimiento</h2><p>Registra ingresos o egresos que no correspondan a una venta automática. Debes abrir la caja primero.</p>
   <form id="movementForm">
@@ -70,6 +94,7 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
  <div class="form-actions" style="margin-top:16px"><button class="primary" id="showCloseButton" type="button">Ir a cerrar caja y arqueo →</button></div>
 </section>
 </div>
+</div>
 <div id="arqueoView" hidden>
 <section class="panel" id="closePanel" style="margin-top:16px">
  <div class="section-head"><div><h2>Cerrar caja y hacer arqueo</h2><p style="margin:6px 0 0">Cuenta el efectivo físico e introduce el total que encontraste.</p></div></div>
@@ -77,8 +102,7 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
   <div class="form-grid">
    <div class="field"><label for="countedCash">Efectivo contado (Bs)</label><input id="countedCash" type="number" min="0" step="0.01" placeholder="Importe contado" required></div>
    <div class="field"><label for="countedQr">QR verificado (Bs)</label><input id="countedQr" type="number" min="0" step="0.01" placeholder="Total confirmado en la app bancaria" required></div>
-   <div class="field"><label for="countedOther">Otros verificados (Bs)</label><input id="countedOther" type="number" min="0" step="0.01" placeholder="Importe verificado" required></div>
-   <div class="field"><label for="closeNote">Nota de cierre (opcional)</label><input id="closeNote" maxlength="160" placeholder="Observaciones del cierre"></div>
+   <div class="field"><label for="closeNote">Nota de cierre</label><input id="closeNote" maxlength="160" placeholder="Observaciones del cierre"></div>
   </div>
   <div class="grid" style="margin-top:16px">
    <article class="card"><div class="label">Total esperado</div><div class="value" id="closeExpectedTotal">Bs 0,00</div></article>
@@ -93,10 +117,27 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
  <div class="section-head"><h2>Herramientas</h2><button id="clearButton" class="danger" type="button">Borrar datos locales</button></div>
  <p class="footer-note">Esta acción elimina el historial guardado en este navegador y requiere confirmación.</p>
 </section>
-<section class="panel" style="margin-top:16px">
- <div class="section-head"><h2>Historial de arqueos</h2></div>
- <div class="table-wrap"><table><thead><tr><th>Cierre</th><th>Fondo inicial</th><th>Esperado</th><th>Contado</th><th>Diferencia</th></tr></thead><tbody id="historyRows"></tbody></table></div>
-</section>
+</div>
+<div id="historialView" hidden>
+ <section class="panel" style="margin-top:16px">
+  <div class="section-head"><div><h2>Historial de cajas cerradas</h2><p class="footer-note">Consulta los cierres anteriores y abre el detalle de todos los movimientos de cada turno.</p></div></div>
+  <div class="table-wrap"><table><thead><tr><th>Fecha y hora de cierre</th><th>Fondo inicial</th><th>Total esperado</th><th>Total verificado</th><th>Diferencia</th><th>Detalle</th></tr></thead><tbody id="historyRows"></tbody></table></div>
+ </section>
+ <section class="panel" id="historyDetailPanel" style="margin-top:16px" hidden>
+  <div class="section-head"><div><h2 id="historyDetailTitle">Detalle de caja</h2><p id="historyDetailSummary" class="footer-note"></p></div><button type="button" id="closeHistoryDetail" class="button">Cerrar detalle</button></div>
+  <div class="closure-summary-grid">
+   <article class="card"><div class="label">Ingresos</div><div class="value" id="detailIncome">Bs 0,00</div></article>
+   <article class="card"><div class="label">Egresos</div><div class="value" id="detailExpense">Bs 0,00</div></article>
+   <article class="card"><div class="label">Neto de movimientos</div><div class="value" id="detailNet">Bs 0,00</div></article>
+   <article class="card difference-card" id="detailDifferenceCard"><div class="label">Diferencia de caja</div><div class="value" id="detailDifference">Bs 0,00</div><span class="difference-status" id="detailDifferenceStatus">PENDIENTE</span></article>
+  </div>
+  <div class="table-wrap"><table><thead><tr><th>Fecha y hora</th><th>Tipo</th><th>Concepto</th><th>Método de pago</th><th>Importe</th></tr></thead><tbody id="historyDetailRows"></tbody><tfoot id="historyDetailTotals"></tfoot></table></div>
+  <section id="historyCloseNotePanel" class="closure-observation" hidden>
+   <div class="closure-observation-icon" aria-hidden="true">!</div>
+   <div><p class="closure-observation-label">OBSERVACIÓN DEL CIERRE</p><p id="historyCloseNote" class="closure-observation-text"></p></div>
+  </section>
+  <button type="button" id="exportHistoryButton" class="button" style="margin-top:14px">Exportar movimientos de esta caja (CSV)</button>
+ </section>
 </div>
 </main>
 <script>
@@ -121,8 +162,9 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
  function updateClosePreview(){
   if(!data.current)return;
   const t=totals(data.current);
+   const closeNoteValue=$("closeNote").value.trim();
   const exp=[t.expected,t.qrExpected||0,t.otherExpected||0];
-  const ids=["countedCash","countedQr","countedOther"];
+  const ids=["countedCash","countedQr"];
   const vals=ids.map(id=>$(id)&&$(id).value!==""?Number($(id).value):0);
   $("closeExpectedTotal").textContent=money(exp.reduce((a,b)=>a+b,0));
   $("closeCountedTotal").textContent=money(vals.reduce((a,b)=>a+b,0));
@@ -144,7 +186,7 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
   $("movementButton").disabled=!s;
   $("movementType").disabled=!s;$("movementAmount").disabled=!s;$("paymentMethod").disabled=!s;$("movementNote").disabled=!s;
   $("closeButton").disabled=!s;$("countedCash").disabled=!s;$("closeNote").disabled=!s;
-  if($("countedQr"))$("countedQr").disabled=!s;if($("countedOther"))$("countedOther").disabled=!s;
+  if($("countedQr"))$("countedQr").disabled=!s;
   $("showCloseButton").disabled=!s;
   $("movementRows").innerHTML="";
   if(!s||!s.movements.length){$("movementRows").innerHTML='<tr><td colspan="5" class="empty">Todavía no hay movimientos en la caja actual.</td></tr>';}
@@ -155,28 +197,74 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
    const amount=document.createElement("td");amount.className="amount "+(m.type==="ingreso"?"positive":"negative");amount.textContent=(m.type==="ingreso"?"+":"−")+money(m.amount);tr.appendChild(amount);$("movementRows").appendChild(tr);
   });
   const allMovements=s?.movements||[];
-  const totalIncome=allMovements.filter(m=>m.type==="ingreso").reduce((a,m)=>a+m.amount,0);
-  const totalExpense=allMovements.filter(m=>m.type==="egreso").reduce((a,m)=>a+m.amount,0);
-  const netMovements=totalIncome-totalExpense;
-  $("movementTotals").innerHTML=`<tr><td colspan="3">Totales</td><td>Ingresos: ${money(totalIncome)}<br>Egresos: ${money(totalExpense)}</td><td class="amount ${netMovements>=0?"positive":"negative"}">Neto: ${money(netMovements)}</td></tr>`;
+  const sumMovement=(type,method)=>allMovements.filter(m=>m.type===type&&m.method===method).reduce((a,m)=>a+m.amount,0);
+  const cashIn=sumMovement("ingreso","efectivo"), qrIn=sumMovement("ingreso","qr"), otherIn=sumMovement("ingreso","otro");
+  const cashOut=sumMovement("egreso","efectivo"), qrOut=sumMovement("egreso","qr"), otherOut=sumMovement("egreso","otro");
+  const totalIncome=cashIn+qrIn+otherIn, totalExpense=cashOut+qrOut+otherOut, netMovements=totalIncome-totalExpense;
+  $("movementTotals").innerHTML=`
+   <tr><td colspan="2">Totales por método</td><td colspan="2">💵 Efectivo: ingresos ${money(cashIn)} · egresos ${money(cashOut)}<br>📱 QR: ingresos ${money(qrIn)} · egresos ${money(qrOut)}<br>Otros: ingresos ${money(otherIn)} · egresos ${money(otherOut)}</td><td class="amount">Ingresos: ${money(totalIncome)}<br>Egresos: ${money(totalExpense)}</td></tr>
+   <tr><td colspan="4">Neto de movimientos</td><td class="amount ${netMovements>=0?"positive":"negative"}">${money(netMovements)}</td></tr>`;
   $("historyRows").innerHTML="";
-  if(!data.closures.length)$("historyRows").innerHTML='<tr><td colspan="5" class="empty">Aún no hay cierres guardados.</td></tr>';
-  else data.closures.slice().reverse().forEach(c=>{
+  if(!data.closures.length)$("historyRows").innerHTML='<tr><td colspan="6" class="empty">Aún no hay cajas cerradas. Cuando cierres una caja, aparecerá aquí con todos sus movimientos.</td></tr>';
+  else data.closures.slice().reverse().forEach((c,reverseIndex)=>{
+   const closureIndex=data.closures.length-1-reverseIndex;
    const tr=document.createElement("tr");
-   [dateText(c.closedAt),money(c.opening),money(c.expected),money(c.counted),money(c.difference)].forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;if(i===4)td.className=c.difference===0?"positive":c.difference<0?"negative":"positive";tr.appendChild(td);});
+   [dateText(c.closedAt),money(c.openingAmount??c.opening),money(c.expected),money(c.counted),money(c.difference)].forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;if(i===4)td.className=Number(c.difference)===0?"positive":Number(c.difference)<0?"negative":"positive";tr.appendChild(td);});
+   const action=document.createElement("td");const btn=document.createElement("button");btn.type="button";btn.className="button";btn.textContent="Ver movimientos";btn.addEventListener("click",()=>showClosureDetail(closureIndex));action.appendChild(btn);tr.appendChild(action);
    $("historyRows").appendChild(tr);
   });
   $("reconciliation").hidden=true;
  }
+ let selectedClosureIndex=null;
+ function showClosureDetail(index){
+  const c=data.closures[index];if(!c)return;selectedClosureIndex=index;
+  $("historyDetailPanel").hidden=false;
+  $("historyDetailTitle").textContent="Detalle de caja — "+dateText(c.closedAt);
+  $("historyDetailSummary").textContent="Cierre: "+dateText(c.closedAt);
+  const movements=Array.isArray(c.movements)?c.movements:[];
+  const sum=(type)=>movements.filter(m=>m.type===type).reduce((a,m)=>a+(Number(m.amount)||0),0);
+  const income=sum("ingreso"),expense=sum("egreso");
+  $("detailIncome").textContent=money(income);$("detailExpense").textContent=money(expense);$("detailNet").textContent=money(income-expense);
+  const savedDifference=Number(c.difference)||0;
+  const differenceCard=$("detailDifferenceCard");
+  differenceCard.classList.remove("is-short","is-over","is-balanced");
+  $("detailDifference").textContent=(savedDifference>0?"+":"")+money(savedDifference);
+  if(savedDifference<0){differenceCard.classList.add("is-short");$("detailDifferenceStatus").textContent="FALTANTE";}
+  else if(savedDifference>0){differenceCard.classList.add("is-over");$("detailDifferenceStatus").textContent="SOBRANTE";}
+  else{differenceCard.classList.add("is-balanced");$("detailDifferenceStatus").textContent="CAJA CUADRADA";}
+  $("historyDetailRows").innerHTML="";
+  if(!movements.length)$("historyDetailRows").innerHTML='<tr><td colspan="5" class="empty">Este cierre no contiene movimientos guardados en su registro.</td></tr>';
+  else movements.slice().reverse().forEach(m=>{
+   const tr=document.createElement("tr");
+   const vals=[dateText(m.createdAt||m.date||c.closedAt),m.type==="ingreso"?"Ingreso":"Egreso",m.concept||m.note||"—",String(m.method||"—").toUpperCase(),(m.type==="egreso"?"−":"+")+money(m.amount)];
+   vals.forEach((v,i)=>{const td=document.createElement("td");td.textContent=v;if(i===4)td.className=m.type==="egreso"?"negative":"positive";tr.appendChild(td);});
+   $("historyDetailRows").appendChild(tr);
+  });
+  $("historyCloseNotePanel").hidden=!c.closeNote;
+  $("historyCloseNote").textContent=c.closeNote||"";
+  const methodNet=(method,type)=>movements.filter(m=>m.type===type&&m.method===method).reduce((a,m)=>a+(Number(m.amount)||0),0);
+  $("historyDetailTotals").innerHTML=`<tr><td colspan="2">Totales por método</td><td colspan="2">Efectivo: ingresos ${money(methodNet("efectivo","ingreso"))} · egresos ${money(methodNet("efectivo","egreso"))}<br>QR: ingresos ${money(methodNet("qr","ingreso"))} · egresos ${money(methodNet("qr","egreso"))}<br>Otros: ingresos ${money(methodNet("otro","ingreso"))} · egresos ${money(methodNet("otro","egreso"))}</td><td>Ingresos: ${money(income)}<br>Egresos: ${money(expense)}</td></tr>`;
+ }
+ $("closeHistoryDetail").addEventListener("click",()=>{$("historyDetailPanel").hidden=true;});
+ $("exportHistoryButton").addEventListener("click",()=>{
+  if(selectedClosureIndex===null)return;const c=data.closures[selectedClosureIndex];if(!c)return;
+  const rows=[["Fecha y hora","Tipo","Concepto","Método","Importe"],...(c.movements||[]).map(m=>[dateText(m.createdAt||m.date||c.closedAt),m.type,m.concept||"",m.method||"",m.amount])];
+  const csv=rows.map(row=>row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(",")).join("\\n");
+  const blob=new Blob(["\\ufeff"+csv],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="movimientos-caja-"+(c.closedAt||"cierre").slice(0,10)+".csv";a.click();URL.revokeObjectURL(url);
+ });
  function setView(view){
+  if(view!=="abrir" && view!=="movimientos" && view!=="arqueo" && view!=="historial")return;
   if(view==="arqueo"&&!data.current){alert("Primero debes abrir la caja.");return;}
-  $("cajaView").hidden=view!=="caja";
+  $("abrirView").hidden=view!=="abrir";
+  $("movimientosView").hidden=view!=="movimientos";
   $("arqueoView").hidden=view!=="arqueo";
+  $("historialView").hidden=view!=="historial";
+  if(view==="historial")$("historyDetailPanel").hidden=true;
   document.querySelectorAll(".view-tab").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
   if(view==="arqueo")updateClosePreview();
  }
  document.querySelectorAll(".view-tab").forEach(b=>b.addEventListener("click",()=>setView(b.dataset.view)));
- $("showCloseButton").addEventListener("click",()=>setView("arqueo"));
+ if($("showCloseButton"))$("showCloseButton").addEventListener("click",()=>setView("arqueo"));
  $("openForm").addEventListener("submit",e=>{
   e.preventDefault();if(data.current)return;
   const amount=Number($("openingAmount").value);
@@ -191,24 +279,26 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
   data.current.movements.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),date:new Date().toISOString(),type,amount,method:$("paymentMethod").value,note});
   save();$("movementAmount").value="";$("movementNote").value="";render();
  });
- ["countedCash","countedQr","countedOther"].forEach(id=>$(id)?.addEventListener("input",updateClosePreview));
+ ["countedCash","countedQr"].forEach(id=>$(id)?.addEventListener("input",updateClosePreview));
  $("closeForm").addEventListener("submit",e=>{
   e.preventDefault();if(!data.current)return;
-  const counted=[Number($("countedCash").value),Number($("countedQr").value),Number($("countedOther").value)];
+  const counted=[Number($("countedCash").value),Number($("countedQr").value)];
   if(counted.some(v=>!Number.isFinite(v)||v<0)){alert("Introduce importes válidos. Si no hubo pagos en un método, escribe 0.");return;}
   const t=totals(data.current);
-  const expected=[t.expected,t.qrExpected,t.otherExpected];
+  const closeNoteValue=$("closeNote").value.trim();
+  const expected=[t.expected,t.qrExpected||0];
   const expectedTotal=expected.reduce((a,b)=>a+b,0),countedTotal=counted.reduce((a,b)=>a+b,0);
+  const methodResults=["Efectivo","QR"].map((method,i)=>({method,expected:Math.round(expected[i]*100)/100,counted:Math.round(counted[i]*100)/100,difference:Math.round((counted[i]-expected[i])*100)/100}));
   const difference=Math.round((countedTotal-expectedTotal)*100)/100;
-  const methodResults=["Efectivo","QR","Otros"].map((method,i)=>({method,expected:Math.round(expected[i]*100)/100,counted:Math.round(counted[i]*100)/100,difference:Math.round((counted[i]-expected[i])*100)/100}));
+  if(methodResults.some(r=>r.difference!==0)&&!closeNoteValue){alert("Hay una diferencia. Escribe una nota de cierre antes de confirmar.");$("closeNote").focus();return;}
   if(!confirm("¿Confirmas cerrar la caja y guardar el arqueo?"))return;
   data.closures.push({...data.current,closedAt:new Date().toISOString(),expected:Math.round(expectedTotal*100)/100,counted:Math.round(countedTotal*100)/100,difference,methodResults,closeNote:$("closeNote").value.trim()});
   data.current=null;save();render();
   const box=$("reconciliation");box.hidden=false;
   const mismatches=methodResults.filter(r=>r.difference!==0);
-  box.textContent=mismatches.length===0?"Cierre correcto: efectivo, QR y otros coinciden.":mismatches.map(r=>`${r.method}: ${r.difference<0?"faltante":"sobrante"} de ${money(Math.abs(r.difference))}`).join(" · ");
+  box.textContent=mismatches.length===0?"Cierre correcto: efectivo y QR coinciden.":mismatches.map(r=>`${r.method}: ${r.difference<0?"faltante":"sobrante"} de ${money(Math.abs(r.difference))}`).join(" · ");
   box.scrollIntoView({behavior:"smooth",block:"center"});
-  ["countedCash","countedQr","countedOther"].forEach(id=>$(id).value="");$("closeNote").value="";
+  ["countedCash","countedQr"].forEach(id=>$(id).value="");$("closeNote").value="";
  });
  $("exportButton").addEventListener("click",()=>{
   const s=data.current;if(!s){alert("No hay una caja abierta para exportar. Los cierres históricos quedan guardados en esta demo.");return;}
