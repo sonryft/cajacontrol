@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const supabaseClient = window.supabaseClient;
 
     function mostrarMensaje(texto, tipo = "error") {
-        console.log("CajaControl: " + texto);
+       console.log("CajaControl: " + texto);
 
         if (mensaje) {
             mensaje.textContent = texto;
