@@ -1,4 +1,3 @@
-```javascript
 /* ========================================
    CAJACONTROL — CONFIGURACIÓN
    Apariencia y preferencias del usuario
@@ -354,4 +353,3 @@ document.addEventListener("DOMContentLoaded", async function () {
         );
     }
 });
-```
