@@ -1,79 +1,200 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario | CajaControl</title>
-    <style>
-        :root {
-            --background: #08090c;
-            --surface: #11141b;
-            --border: rgba(255,255,255,.08);
-            --text: #f4f5f7;
-            --muted: #9298a6;
-            --accent: #b7f36b;
-            --accent-dark: #26391b;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            min-height: 100vh;
-            padding: 30px;
-            background: var(--background);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        }
-        .container { max-width: 1100px; margin: auto; }
-        header {
-            display: flex; justify-content: space-between;
-            align-items: center; gap: 15px; flex-wrap: wrap;
-            padding-bottom: 24px; border-bottom: 1px solid var(--border);
-        }
-        .eyebrow { color: var(--muted); font-size: 11px; letter-spacing: 2px; }
-        h1 { margin-top: 8px; font-size: 30px; }
-        .button {
-            display: inline-block; padding: 11px 16px;
-            color: var(--text); background: var(--surface);
-            border: 1px solid var(--border); border-radius: 10px;
-            text-decoration: none; cursor: pointer;
-        }
-        .panel {
-            margin-top: 25px; padding: 25px;
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: 18px;
-        }
-        .panel h2 { margin-bottom: 10px; font-size: 18px; }
-        .panel p { color: var(--muted); line-height: 1.7; }
-        .notice {
-            margin-top: 20px; padding: 15px;
-            background: var(--accent-dark); border-radius: 12px;
-            color: var(--accent); font-size: 13px; line-height: 1.6;
-        }
-        @media (max-width: 600px) {
-            body { padding: 18px; }
-            h1 { font-size: 25px; }
-            .panel { padding: 18px; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventario | CajaControl</title>
+<style>
+:root{--background:#08090c;--surface:#11141b;--surface2:#171b24;--border:rgba(255,255,255,.09);--text:#f4f5f7;--muted:#9298a6;--accent:#b7f36b;--accent-dark:#26391b;--danger:#ff7777;--warning:#f5c86a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{min-height:100vh;padding:28px;background:var(--background);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.container{max-width:1250px;margin:auto}
+header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;padding-bottom:22px;border-bottom:1px solid var(--border)}
+.eyebrow{color:var(--muted);font-size:11px;letter-spacing:2px}
+h1{margin-top:7px;font-size:30px}
+.header-actions{display:flex;gap:9px;flex-wrap:wrap}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 15px;color:var(--text);background:var(--surface);border:1px solid var(--border);border-radius:10px;text-decoration:none;cursor:pointer;font:inherit;font-size:13px}
+.button.primary{background:var(--accent);color:#10150b;font-weight:750;border-color:transparent}
+.button.danger{color:var(--danger)}
+.button:disabled{opacity:.4;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:22px}
+.stat,.panel{background:var(--surface);border:1px solid var(--border);border-radius:16px}
+.stat{padding:17px}
+.stat-label{color:var(--muted);font-size:12px}
+.stat-value{margin-top:8px;font-size:24px;font-weight:750}
+.stat-note{margin-top:5px;color:var(--muted);font-size:11px}
+.panel{margin-top:18px;padding:21px}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:17px}
+h2{font-size:17px}
+.subtext{color:var(--muted);font-size:12px;line-height:1.5;margin-top:5px}
+.form-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.wide{grid-column:span 2}
+label{font-size:12px;color:var(--muted)}
+input,select,textarea{width:100%;padding:11px 12px;background:#0b0d12;color:var(--text);border:1px solid var(--border);border-radius:10px;font:inherit;font-size:13px;outline:none}
+input:focus,select:focus,textarea:focus{border-color:var(--accent)}
+textarea{resize:vertical;min-height:42px}
+.form-actions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap;margin-top:15px}
+.toolbar{display:grid;grid-template-columns:minmax(200px,1fr) 190px 170px;gap:10px;margin-bottom:15px}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:900px}
+th,td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--border);font-size:12px;vertical-align:middle}
+th{color:var(--muted);font-weight:500;white-space:nowrap}
+td strong{font-size:13px}
+.muted{color:var(--muted)}
+.badge{display:inline-block;padding:5px 8px;border-radius:7px;background:var(--accent-dark);color:var(--accent);font-size:11px;white-space:nowrap}
+.badge.low{background:rgba(245,200,106,.12);color:var(--warning)}
+.badge.out{background:rgba(255,119,119,.12);color:var(--danger)}
+.row-actions{display:flex;gap:6px}
+.icon-button{padding:7px 9px;border:1px solid var(--border);background:#202631;color:var(--text);border-radius:8px;cursor:pointer;font-size:12px}
+.icon-button.delete{color:var(--danger)}
+.empty{padding:28px 12px;text-align:center;color:var(--muted);font-size:13px;line-height:1.6;border:1px dashed var(--border);border-radius:12px}
+.notice{margin-top:14px;padding:12px 14px;background:var(--accent-dark);border-radius:10px;color:var(--accent);font-size:12px;line-height:1.6}
+.notice.warning{background:rgba(245,200,106,.1);color:var(--warning)}
+.toast{position:fixed;right:20px;bottom:20px;max-width:360px;padding:14px 17px;background:#202631;border:1px solid var(--border);border-radius:12px;box-shadow:0 12px 40px #0008;font-size:13px;line-height:1.5;display:none;z-index:10}
+.hidden{display:none!important}
+@media(max-width:950px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.toolbar{grid-template-columns:1fr 1fr}.toolbar input{grid-column:1/-1}}
+@media(max-width:600px){body{padding:16px}h1{font-size:26px}.panel{padding:16px}.stats{gap:9px}.stat{padding:13px}.stat-value{font-size:20px}.form-grid{grid-template-columns:1fr 1fr}.field.wide{grid-column:span 2}.header-actions{width:100%}.header-actions .button{flex:1}.toolbar{grid-template-columns:1fr}.toolbar input{grid-column:auto}}
+</style>
 </head>
 <body>
-    <main class="container">
-        <header>
-            <div>
-                <div class="eyebrow">CAJACONTROL / MÓDULOS</div>
-                <h1>Inventario</h1>
-            </div>
-            <a class="button" href="../02-dashboard/index.html">← Volver al dashboard</a>
-        </header>
+<main class="container">
+<header>
+  <div><div class="eyebrow">CAJACONTROL / MÓDULOS</div><h1>Inventario</h1></div>
+  <div class="header-actions"><a class="button" href="../02-dashboard/index.html">← Dashboard</a><button class="button primary" id="newProductBtn" type="button">＋ Nuevo producto</button></div>
+</header>
 
-        <section class="panel">
-            <h2>Control de inventario</h2>
-            <p>Este módulo estará destinado a registrar productos, existencias, entradas, salidas y movimientos de stock.</p>
-            <div class="notice">
-                La página está creada. En la siguiente etapa implementaremos la gestión de productos y el control de existencias.
-            </div>
-        </section>
-    </main>
+<section class="stats">
+  <article class="stat"><div class="stat-label">Productos registrados</div><div class="stat-value" id="statProducts">0</div><div class="stat-note">Productos diferentes</div></article>
+  <article class="stat"><div class="stat-label">Unidades en stock</div><div class="stat-value" id="statUnits">0</div><div class="stat-note">Suma de existencias</div></article>
+  <article class="stat"><div class="stat-label">Stock bajo</div><div class="stat-value" id="statLow">0</div><div class="stat-note">En el mínimo o por debajo</div></article>
+  <article class="stat"><div class="stat-label">Valor de compra estimado</div><div class="stat-value" id="statValue">Bs 0,00</div><div class="stat-note">Stock × costo de compra</div></article>
+</section>
+
+<section class="panel hidden" id="formPanel">
+  <div class="panel-head"><div><h2 id="formTitle">Registrar producto</h2><p class="subtext">Registra los productos que comercializa cada empresa: alimentos, bebidas, accesorios, ropa, artículos de tienda y más.</p></div></div>
+  <form id="productForm">
+    <input type="hidden" id="editId">
+    <div class="form-grid">
+      <div class="field"><label for="code">Código / SKU *</label><input id="code" maxlength="40" placeholder="Ej. REF-001" required></div>
+      <div class="field wide"><label for="name">Nombre del producto *</label><input id="name" maxlength="120" placeholder="Ej. Refresco personal" required></div>
+      <div class="field"><label for="category">Categoría *</label><input id="category" maxlength="60" list="categorySuggestions" placeholder="Ej. Bebidas, accesorios, abarrotes" required><datalist id="categorySuggestions"><option value="Golosinas"><option value="Bebidas"><option value="Snacks"><option value="Abarrotes"><option value="Limpieza"><option value="Ropa"><option value="Accesorios"><option value="Otros"></datalist></div>
+      <div class="field"><label for="unit">Unidad de control *</label><input id="unit" maxlength="30" list="unitSuggestions" placeholder="Ej. Unidad, caja, kg, litro" value="Unidad" required><datalist id="unitSuggestions"><option value="Unidad"><option value="Paquete"><option value="Caja"><option value="Bolsa"><option value="Botella"><option value="Lata"><option value="Kilogramo"><option value="Gramo"><option value="Litro"><option value="Metro"><option value="Par"><option value="Docena"></datalist></div>
+      <div class="field"><label for="cost">Precio de compra (Bs) *</label><input id="cost" type="number" min="0" step="0.01" placeholder="0.00" required></div>
+      <div class="field"><label for="price">Precio de venta (Bs) *</label><input id="price" type="number" min="0" step="0.01" placeholder="0.00" required></div>
+      <div class="field"><label for="stock">Stock actual *</label><input id="stock" type="number" min="0" step="0.001" placeholder="0" required></div>
+      <div class="field"><label for="minStock">Avisar cuando queden</label><input id="minStock" type="number" min="0" step="0.001" value="5" required></div>
+      <div class="field wide"><label for="description">Descripción / notas (opcional)</label><input id="description" maxlength="200" placeholder="Marca, tamaño, sabor u otra información"></div>
+    </div>
+    <div class="form-actions"><button class="button" id="cancelForm" type="button">Cancelar</button><button class="button primary" type="submit">Guardar producto</button></div>
+  </form>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><div><h2>Catálogo de productos</h2><p class="subtext">Busca, edita y controla las existencias de la empresa.</p></div><button class="button" id="exportBtn" type="button">Exportar CSV</button></div>
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="Buscar por nombre o código…">
+    <select id="categoryFilter"><option value="">Todas las categorías</option></select>
+    <select id="stockFilter"><option value="">Todo el stock</option><option value="low">Stock bajo</option><option value="out">Agotados</option></select>
+  </div>
+  <div class="table-wrap"><table><thead><tr><th>Código</th><th>Producto</th><th>Categoría</th><th>Costo</th><th>Venta</th><th>Stock</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="productsBody"></tbody></table></div>
+  <div class="empty hidden" id="productsEmpty">No hay productos que coincidan con la búsqueda. Puedes registrar el primero con “Nuevo producto”.</div>
+  <div class="notice warning">Los datos de esta versión se guardan en este navegador y aún no se sincronizan entre dispositivos. Antes de usarla con varias empresas, conectaremos los registros a una base de datos compartida y separaremos los productos por empresa.</div>
+</section>
+
+<section class="panel">
+  <div class="panel-head"><div><h2>Movimientos de inventario</h2><p class="subtext">Registro de altas, compras recibidas, ajustes y salidas manuales.</p></div><button class="button" id="movementBtn" type="button">＋ Registrar movimiento</button></div>
+  <div id="movementFormWrap" class="hidden">
+    <form id="movementForm">
+      <div class="form-grid">
+        <div class="field wide"><label for="movementProduct">Producto *</label><select id="movementProduct" required></select></div>
+        <div class="field"><label for="movementType">Tipo *</label><select id="movementType" required><option value="entrada">Entrada / compra recibida</option><option value="salida">Salida / merma</option><option value="ajuste">Ajuste de stock</option></select></div>
+        <div class="field"><label for="movementQty" id="movementQtyLabel">Cantidad *</label><input id="movementQty" type="number" min="0.001" step="0.001" required></div>
+        <div class="field wide"><label for="movementNote">Motivo / detalle *</label><input id="movementNote" maxlength="180" placeholder="Ej. Compra al proveedor o producto dañado" required></div>
+      </div>
+      <div class="form-actions"><button class="button" id="cancelMovement" type="button">Cancelar</button><button class="button primary" type="submit">Guardar movimiento</button></div>
+    </form>
+  </div>
+  <div class="table-wrap"><table style="min-width:760px"><thead><tr><th>Fecha</th><th>Producto</th><th>Movimiento</th><th>Cantidad</th><th>Detalle</th></tr></thead><tbody id="movementsBody"></tbody></table></div>
+  <div class="empty hidden" id="movementsEmpty">Todavía no hay movimientos registrados.</div>
+</section>
+</main>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+'use strict';
+const PRODUCTS_KEY='cajacontrol_productos';
+const MOVEMENTS_KEY='cajacontrol_inventario_movimientos';
+let products=[], movements=[], toastTimer;
+const $=id=>document.getElementById(id);
+const money=n=>'Bs '+Number(n||0).toLocaleString('es-BO',{minimumFractionDigits:2,maximumFractionDigits:2});
+const safeText=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const read=(key,fallback=[])=>{try{const v=JSON.parse(localStorage.getItem(key));return Array.isArray(v)?v:fallback}catch(e){return fallback}};
+function toast(message){const el=$('toast');el.textContent=message;el.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.style.display='none',4000)}
+function saveProducts(){localStorage.setItem(PRODUCTS_KEY,JSON.stringify(products))}
+function saveMovements(){localStorage.setItem(MOVEMENTS_KEY,JSON.stringify(movements))}
+function logMovement(product,type,qty,note,oldStock,newStock){movements.unshift({id:'M-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),timestamp:new Date().toISOString(),productId:product.id,code:product.code,name:product.name,type,qty:Number(qty),note,oldStock:Number(oldStock),newStock:Number(newStock)})}
+function resetForm(){ $('productForm').reset();$('editId').value='';$('minStock').value='5';$('formTitle').textContent='Registrar producto';$('formPanel').classList.add('hidden') }
+function showForm(){resetForm();$('formPanel').classList.remove('hidden');$('code').focus();$('formPanel').scrollIntoView({behavior:'smooth',block:'start'})}
+function editProduct(id){const p=products.find(x=>x.id===id);if(!p)return;resetForm();$('editId').value=p.id;$('code').value=p.code;$('name').value=p.name;$('category').value=p.category;$('unit').value=p.unit||'Unidad';$('cost').value=p.cost;$('price').value=p.price;$('stock').value=p.stock;$('minStock').value=p.minStock;$('description').value=p.description||'';$('formTitle').textContent='Editar producto';$('formPanel').classList.remove('hidden');$('formPanel').scrollIntoView({behavior:'smooth',block:'start'})}
+function status(p){if(Number(p.stock)<=0)return {label:'Agotado',cls:'out'};if(Number(p.stock)<=Number(p.minStock))return {label:'Stock bajo',cls:'low'};return {label:'Disponible',cls:''}}
+function renderStats(){$('statProducts').textContent=products.length;$('statUnits').textContent=products.reduce((s,p)=>s+Number(p.stock||0),0).toLocaleString('es-BO',{maximumFractionDigits:3});$('statLow').textContent=products.filter(p=>Number(p.stock)<=Number(p.minStock)).length;$('statValue').textContent=money(products.reduce((s,p)=>s+Number(p.stock||0)*Number(p.cost||0),0))}
+function renderProducts(){
+ const categoryFilter=$('categoryFilter');
+ const selectedCategory=categoryFilter.value;
+ const categories=[...new Set(products.map(p=>p.category).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'es'));
+ categoryFilter.innerHTML='<option value="">Todas las categorías</option>'+categories.map(c=>`<option value="${safeText(c)}">${safeText(c)}</option>`).join('');
+ if(categories.includes(selectedCategory)) categoryFilter.value=selectedCategory;
+ const q=$('search').value.trim().toLocaleLowerCase(),cat=categoryFilter.value,sf=$('stockFilter').value;
+ const list=products.filter(p=>(!q||p.name.toLocaleLowerCase().includes(q)||p.code.toLocaleLowerCase().includes(q))&&(!cat||p.category===cat)&&(!sf||(sf==='low'&&Number(p.stock)>0&&Number(p.stock)<=Number(p.minStock))||(sf==='out'&&Number(p.stock)<=0)));
+ $('productsBody').innerHTML=list.map(p=>{const st=status(p);return `<tr><td><strong>${safeText(p.code)}</strong></td><td><strong>${safeText(p.name)}</strong><br><span class="muted">${safeText(p.unit||'Unidad')}${p.description?' · '+safeText(p.description):''}</span></td><td>${safeText(p.category)}</td><td>${money(p.cost)}</td><td>${money(p.price)}</td><td><strong>${Number(p.stock).toLocaleString('es-BO',{maximumFractionDigits:3})}</strong></td><td><span class="badge ${st.cls}">${st.label}</span></td><td><div class="row-actions"><button class="icon-button" data-edit="${safeText(p.id)}" type="button">Editar</button><button class="icon-button delete" data-delete="${safeText(p.id)}" type="button">Eliminar</button></div></td></tr>`}).join('');
+ $('productsEmpty').classList.toggle('hidden',list.length>0);
+ $('productsBody').querySelectorAll('[data-edit]').forEach(b=>b.addEventListener('click',()=>editProduct(b.dataset.edit)));
+ $('productsBody').querySelectorAll('[data-delete]').forEach(b=>b.addEventListener('click',()=>deleteProduct(b.dataset.delete)));
+ renderStats();renderMovementProductOptions();
+}
+function deleteProduct(id){const p=products.find(x=>x.id===id);if(!p)return;if(!confirm(`¿Eliminar "${p.name}" del catálogo? El historial de movimientos se conservará.`))return;products=products.filter(x=>x.id!==id);try{saveProducts();renderProducts();toast('Producto eliminado del catálogo.')}catch(e){toast('No se pudo guardar el cambio.')}} 
+function renderMovementProductOptions(){const select=$('movementProduct'),old=select.value;select.innerHTML='<option value="">Selecciona un producto</option>'+products.map(p=>`<option value="${safeText(p.id)}">${safeText(p.code)} — ${safeText(p.name)} (stock: ${p.stock})</option>`).join('');if(products.some(p=>p.id===old))select.value=old}
+function renderMovements(){$('movementsBody').innerHTML=movements.slice(0,100).map(m=>`<tr><td>${safeText(new Date(m.timestamp).toLocaleString('es-BO'))}</td><td><strong>${safeText(m.code||'')}</strong><br>${safeText(m.name||'')}</td><td>${safeText(({entrada:'Entrada',salida:'Salida / merma',ajuste:'Ajuste',alta:'Alta de producto'})[m.type]||m.type)}</td><td>${m.type==='ajuste'?'→ ':m.type==='salida'?'− ':'＋ '}${Number(m.qty).toLocaleString('es-BO',{maximumFractionDigits:3})}</td><td>${safeText(m.note||'—')}<br><span class="muted">Stock: ${m.oldStock??'—'} → ${m.newStock??'—'}</span></td></tr>`).join('');$('movementsEmpty').classList.toggle('hidden',movements.length>0)}
+$('productForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const id=$('editId').value,code=$('code').value.trim(),name=$('name').value.trim();
+ const cost=Number($('cost').value),price=Number($('price').value),stock=Number($('stock').value),minStock=Number($('minStock').value);
+ if(!code||!name){toast('Completa el código y el nombre del producto.');return}
+ if([cost,price,stock,minStock].some(n=>!Number.isFinite(n)||n<0)){toast('Los precios y las cantidades no pueden ser negativos.');return}
+ if(products.some(p=>p.code.toLocaleLowerCase()===code.toLocaleLowerCase()&&p.id!==id)){toast('Ya existe un producto con ese código. Usa un código diferente.');return}
+ const old=products.find(p=>p.id===id),p={id:id||'P-'+Date.now()+'-'+Math.random().toString(36).slice(2,6),code,name,category:$('category').value,unit:$('unit').value,cost,price,stock,minStock,description:$('description').value.trim(),createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
+ try{
+  if(old){products=products.map(x=>x.id===id?p:x);if(Number(old.stock)!==stock){logMovement(p,'ajuste',Math.abs(stock-Number(old.stock)),'Cambio de stock desde edición',old.stock,stock)}}
+  else{products.unshift(p);logMovement(p,'alta',stock,'Registro inicial del producto',0,stock)}
+  saveProducts();saveMovements();resetForm();renderProducts();renderMovements();toast(old?'Producto actualizado correctamente.':'Producto registrado correctamente.');
+ }catch(err){toast('No se pudo guardar. Comprueba el almacenamiento del navegador.')}
+});
+$('movementForm').addEventListener('submit',e=>{
+ e.preventDefault();const id=$('movementProduct').value,type=$('movementType').value,qty=Number($('movementQty').value),note=$('movementNote').value.trim(),p=products.find(x=>x.id===id);
+ if(!p){toast('Selecciona un producto.');return}if(!Number.isFinite(qty)||qty<=0){toast('La cantidad debe ser mayor que cero.');return}if(!note){toast('Escribe el motivo del movimiento.');return}
+ const old=Number(p.stock);let next=old;
+ if(type==='entrada')next=old+qty;
+ if(type==='salida'){if(qty>old){toast('La salida supera el stock disponible.');return}next=old-qty}
+ if(type==='ajuste')next=qty;
+ const movementQty=type==='ajuste'?Math.abs(next-old):qty;
+ try{p.stock=Number(next.toFixed(3));p.updatedAt=new Date().toISOString();logMovement(p,type,movementQty,note,old,p.stock);saveProducts();saveMovements();$('movementForm').reset();$('movementFormWrap').classList.add('hidden');renderProducts();renderMovements();toast('Movimiento registrado y stock actualizado.')}catch(err){toast('No se pudo guardar el movimiento.')}
+});
+$('newProductBtn').addEventListener('click',showForm);
+$('cancelForm').addEventListener('click',resetForm);
+$('movementBtn').addEventListener('click',()=>{if(!products.length){toast('Primero registra al menos un producto.');showForm();return}$('movementFormWrap').classList.toggle('hidden');renderMovementProductOptions();$('movementFormWrap').scrollIntoView({behavior:'smooth',block:'start'})});
+$('cancelMovement').addEventListener('click',()=>{$('movementForm').reset();$('movementFormWrap').classList.add('hidden')});
+$('search').addEventListener('input',renderProducts);$('categoryFilter').addEventListener('change',renderProducts);$('stockFilter').addEventListener('change',renderProducts);
+$('movementType').addEventListener('change',()=>{$('movementQtyLabel').textContent=$('movementType').value==='ajuste'?'Nuevo stock total *':'Cantidad *';$('movementQty').placeholder=$('movementType').value==='ajuste'?'Ej. 20':'Ej. 10'});
+$('exportBtn').addEventListener('click',()=>{
+ if(!products.length){toast('No hay productos para exportar.');return}
+ const rows=[['Código','Producto','Categoría','Unidad','Costo','Precio venta','Stock','Stock mínimo','Descripción'],...products.map(p=>[p.code,p.name,p.category,p.unit,p.cost,p.price,p.stock,p.minStock,p.description||''])];
+ const csv=rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n'),blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='cajacontrol-inventario.csv';a.click();URL.revokeObjectURL(url);
+});
+try{products=read(PRODUCTS_KEY);movements=read(MOVEMENTS_KEY)}catch(e){products=[];movements=[]}
+renderProducts();renderMovements();
+})();
+</script>
 </body>
 </html>
-```
