@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,111 +8,547 @@
         :root {
             --background: #08090c;
             --surface: #11141b;
+            --surface-2: #171b24;
             --border: rgba(255,255,255,.08);
             --text: #f4f5f7;
             --muted: #9298a6;
             --accent: #b7f36b;
             --accent-dark: #26391b;
+            --danger: #ff7b7b;
+            --warning: #ffd479;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
-            min-height: 100vh;
-            padding: 30px;
-            background: var(--background);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            min-height: 100vh; padding: 30px; background: var(--background);
+            color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
-
-        .container { max-width: 1100px; margin: auto; }
-
+        .container { max-width: 1200px; margin: auto; }
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border);
+            display:flex; justify-content:space-between; align-items:center; gap:15px;
+            flex-wrap:wrap; padding-bottom:24px; border-bottom:1px solid var(--border);
         }
-
-        .eyebrow {
-            color: var(--muted);
-            font-size: 11px;
-            letter-spacing: 2px;
+        .eyebrow { color:var(--muted); font-size:11px; letter-spacing:2px; }
+        h1 { margin-top:8px; font-size:30px; }
+        .subtitle { margin-top:8px; color:var(--muted); font-size:14px; line-height:1.5; }
+        .button, button {
+            display:inline-flex; align-items:center; justify-content:center; gap:8px;
+            padding:11px 16px; color:var(--text); background:var(--surface);
+            border:1px solid var(--border); border-radius:10px; text-decoration:none;
+            cursor:pointer; font:inherit; font-size:13px;
         }
-
-        h1 { margin-top: 8px; font-size: 30px; }
-
-        .button {
-            display: inline-block;
-            padding: 11px 16px;
-            color: var(--text);
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            text-decoration: none;
+        .button:hover, button:hover { border-color:rgba(183,243,107,.45); }
+        button.primary { background:var(--accent); color:#10140c; border-color:var(--accent); font-weight:700; }
+        button:disabled { opacity:.45; cursor:not-allowed; }
+        .toolbar {
+            display:flex; align-items:end; flex-wrap:wrap; gap:12px; margin-top:22px;
+            padding:16px; background:var(--surface); border:1px solid var(--border); border-radius:14px;
         }
-
-        .panel {
-            margin-top: 25px;
-            padding: 25px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 18px;
+        .field { display:flex; flex-direction:column; gap:7px; min-width:150px; }
+        .field label { color:var(--muted); font-size:12px; }
+        input, select {
+            width:100%; min-height:40px; padding:9px 11px; color:var(--text);
+            background:#0b0d12; border:1px solid var(--border); border-radius:9px; font:inherit;
         }
-
-        .panel h2 { margin-bottom: 10px; font-size: 18px; }
-
-        .panel p {
-            color: var(--muted);
-            line-height: 1.7;
+        input:focus, select:focus { outline:1px solid var(--accent); border-color:var(--accent); }
+        .cards {
+            display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; margin-top:18px;
         }
-
-        .notice {
-            margin-top: 20px;
-            padding: 15px;
-            background: var(--accent-dark);
-            border-radius: 12px;
-            color: var(--accent);
-            font-size: 13px;
-            line-height: 1.6;
+        .card {
+            min-width:0; padding:18px; background:var(--surface);
+            border:1px solid var(--border); border-radius:15px;
         }
-
-        @media (max-width: 600px) {
-            body { padding: 18px; }
-            h1 { font-size: 25px; }
-            .panel { padding: 18px; }
+        .card-label { color:var(--muted); font-size:12px; }
+        .card-value { margin-top:12px; font-size:clamp(19px,2.5vw,27px); font-weight:700; overflow-wrap:anywhere; }
+        .card-help { margin-top:8px; color:var(--muted); font-size:11px; line-height:1.5; }
+        .positive { color:var(--accent); }
+        .negative { color:var(--danger); }
+        .warning { color:var(--warning); }
+        .grid-two { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px; }
+        .panel { min-width:0; padding:21px; background:var(--surface); border:1px solid var(--border); border-radius:16px; margin-top:18px; }
+        .grid-two .panel { margin-top:0; }
+        .panel h2 { font-size:17px; margin-bottom:8px; }
+        .panel-description { color:var(--muted); font-size:12px; line-height:1.6; margin-bottom:15px; }
+        .table-wrap { width:100%; overflow-x:auto; }
+        table { width:100%; border-collapse:collapse; font-size:12px; white-space:nowrap; }
+        th, td { padding:12px 10px; text-align:left; border-bottom:1px solid var(--border); }
+        th { color:var(--muted); font-weight:600; }
+        td.numeric, th.numeric { text-align:right; }
+        .empty { padding:20px 10px; color:var(--muted); text-align:center; white-space:normal; line-height:1.6; }
+        .notice { padding:13px 15px; background:var(--accent-dark); border-radius:11px; color:var(--accent); font-size:12px; line-height:1.6; }
+        .notice.caution { margin-top:12px; background:rgba(255,212,121,.09); color:var(--warning); }
+        .status { margin-top:12px; color:var(--muted); font-size:12px; line-height:1.6; }
+        .footer-actions { display:flex; flex-wrap:wrap; gap:10px; margin-top:14px; }
+        @media (max-width:900px) { .cards { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+        @media (max-width:700px) {
+            body { padding:18px; } h1 { font-size:25px; }
+            .grid-two { grid-template-columns:1fr; }
+            .toolbar .field { flex:1 1 130px; }
+            .toolbar button { flex:1 1 100%; }
         }
+        @media (max-width:420px) { .cards { grid-template-columns:1fr 1fr; gap:9px; } .card { padding:13px; } .card-value { font-size:18px; } }
     </style>
 </head>
 <body>
-    <main class="container">
-        <header>
-            <div>
-                <div class="eyebrow">CAJACONTROL / MÓDULOS</div>
-                <h1>Reportes</h1>
-            </div>
+<main class="container">
+    <header>
+        <div>
+            <div class="eyebrow">CAJACONTROL / MÓDULOS</div>
+            <h1>Reportes</h1>
+            <p class="subtitle">Resumen de ventas, inventario y movimientos de caja.</p>
+        </div>
+        <a class="button" href="../02-dashboard/index.html">← Volver al dashboard</a>
+    </header>
 
-            <a class="button" href="../02-dashboard/index.html">
-                ← Volver al dashboard
-            </a>
-        </header>
+    <section class="toolbar" aria-label="Filtros de reportes">
+        <div class="field">
+            <label for="dateFrom">Desde</label>
+            <input type="date" id="dateFrom">
+        </div>
+        <div class="field">
+            <label for="dateTo">Hasta</label>
+            <input type="date" id="dateTo">
+        </div>
+        <button class="primary" id="applyFilters" type="button">Actualizar reporte</button>
+        <button id="exportCsv" type="button">Exportar CSV</button>
+    </section>
 
+    <section class="cards" aria-label="Indicadores principales">
+        <article class="card">
+            <div class="card-label">Ventas registradas</div>
+            <div class="card-value" id="salesTotal">Bs 0,00</div>
+            <div class="card-help" id="salesCount">0 ventas en el período</div>
+        </article>
+        <article class="card">
+            <div class="card-label">Costo de productos vendidos</div>
+            <div class="card-value" id="costTotal">Bs 0,00</div>
+            <div class="card-help">Calculado a partir del costo actual guardado en inventario cuando no hay costo histórico.</div>
+        </article>
+        <article class="card">
+            <div class="card-label">Ganancia bruta estimada</div>
+            <div class="card-value" id="grossProfit">Bs 0,00</div>
+            <div class="card-help">Ventas menos costo de productos; no descuenta gastos generales.</div>
+        </article>
+        <article class="card">
+            <div class="card-label">Stock bajo</div>
+            <div class="card-value" id="lowStockCount">0</div>
+            <div class="card-help">Productos con existencias iguales o inferiores al mínimo.</div>
+        </article>
+    </section>
+
+    <div class="grid-two">
         <section class="panel">
-            <h2>Informes del negocio</h2>
-            <p>
-                Aquí podrás consultar información sobre ventas, ingresos,
-                egresos, cierres de caja e inventario.
-            </p>
-
-            <div class="notice">
-                La página está creada. En la siguiente etapa implementaremos
-                los reportes con datos reales de CajaControl.
+            <h2>Ventas por método de pago</h2>
+            <p class="panel-description">Distribución del total vendido según el método guardado en cada venta.</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Método</th><th class="numeric">Ventas</th><th class="numeric">Cantidad</th></tr></thead>
+                    <tbody id="paymentTable"><tr><td colspan="3" class="empty">Cargando…</td></tr></tbody>
+                </table>
             </div>
         </section>
-    </main>
+        <section class="panel">
+            <h2>Productos con stock bajo</h2>
+            <p class="panel-description">Revisa qué productos necesitan reposición.</p>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Código</th><th>Producto</th><th class="numeric">Stock</th><th class="numeric">Mínimo</th></tr></thead>
+                    <tbody id="lowStockTable"><tr><td colspan="4" class="empty">Cargando…</td></tr></tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <section class="panel">
+        <h2>Productos más vendidos</h2>
+        <p class="panel-description">Ordenados por unidades vendidas dentro del período seleccionado.</p>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Código</th><th>Producto</th><th class="numeric">Unidades</th><th class="numeric">Importe vendido</th></tr></thead>
+                <tbody id="topProductsTable"><tr><td colspan="4" class="empty">Cargando…</td></tr></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Resumen de caja</h2>
+        <p class="panel-description">Ingresos y egresos registrados en movimientos de caja dentro del período. No equivale a ganancia neta.</p>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Concepto</th><th class="numeric">Importe</th></tr></thead>
+                <tbody id="cashTable"><tr><td colspan="2" class="empty">Cargando…</td></tr></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="panel">
+        <h2>Estado de los datos</h2>
+        <div class="notice" id="dataNotice">Leyendo los datos guardados en este navegador…</div>
+        <div class="notice caution">
+            Importante: estos reportes usan los datos locales de este navegador. No son todavía reportes compartidos entre dispositivos. La ganancia es estimada si las ventas no guardaron el costo del producto en el momento de venderlo.
+        </div>
+        <p class="status" id="dataStatus"></p>
+        <div class="footer-actions">
+            <button type="button" id="refreshButton">↻ Recargar datos</button>
+        </div>
+    </section>
+</main>
+
+<script>
+(() => {
+    "use strict";
+
+    const KEYS = {
+        products: "cajacontrol_productos",
+        sales: "cajacontrol_ventas",
+        cash: "cajacontrol-caja-v1",
+        movements: "cajacontrol_inventario_movimientos"
+    };
+
+    const $ = id => document.getElementById(id);
+    let lastReportRows = [];
+
+    function readJSON(key, fallback) {
+        try {
+            const raw = localStorage.getItem(key);
+            if (raw === null) return { value: fallback, exists: false, error: false };
+            return { value: JSON.parse(raw), exists: true, error: false };
+        } catch (error) {
+            return { value: fallback, exists: true, error: true };
+        }
+    }
+
+    function asArray(value) {
+        if (Array.isArray(value)) return value;
+        if (value && Array.isArray(value.data)) return value.data;
+        if (value && Array.isArray(value.items)) return value.items;
+        return [];
+    }
+
+    function number(value) {
+        const n = Number(value);
+        return Number.isFinite(n) ? n : 0;
+    }
+
+    function money(value) {
+        return new Intl.NumberFormat("es-BO", {
+            style: "currency", currency: "BOB", minimumFractionDigits: 2, maximumFractionDigits: 2
+        }).format(number(value));
+    }
+
+    function safeDate(value) {
+        if (!value) return null;
+        const d = new Date(value);
+        return Number.isNaN(d.getTime()) ? null : d;
+    }
+
+    function dateKey(value) {
+        const d = safeDate(value);
+        if (!d) return "";
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+    }
+
+    function escapeHTML(value) {
+        return String(value ?? "").replace(/[&<>"']/g, char => ({
+            "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+        })[char]);
+    }
+
+    function getProductCost(product) {
+        return number(product?.cost ?? product?.purchasePrice ?? product?.precioCompra ?? product?.precio_compra);
+    }
+
+    function getProductPrice(product) {
+        return number(product?.price ?? product?.salePrice ?? product?.precioVenta ?? product?.precio_venta);
+    }
+
+    function getProductId(product) {
+        return String(product?.id ?? product?.productId ?? "");
+    }
+
+    function getProductCode(product) {
+        return String(product?.code ?? product?.codigo ?? "");
+    }
+
+    function getProductName(product) {
+        return String(product?.name ?? product?.nombre ?? "Producto sin nombre");
+    }
+
+    function getSaleDate(sale) {
+        return sale?.timestamp ?? sale?.date ?? sale?.createdAt ?? sale?.fecha ?? sale?.created_at ?? null;
+    }
+
+    function getSaleItems(sale) {
+        if (Array.isArray(sale?.items)) return sale.items;
+        if (Array.isArray(sale?.products)) return sale.products;
+        if (sale?.product || sale?.productId || sale?.productName || sale?.name) return [sale];
+        return [];
+    }
+
+    function getItemQty(item) {
+        return number(item?.qty ?? item?.quantity ?? item?.cantidad ?? 1);
+    }
+
+    function getItemProductId(item) {
+        return String(item?.productId ?? item?.product?.id ?? item?.idProducto ?? "");
+    }
+
+    function getItemName(item) {
+        return String(item?.name ?? item?.productName ?? item?.product?.name ?? item?.nombre ?? "Producto");
+    }
+
+    function getItemCode(item) {
+        return String(item?.code ?? item?.productCode ?? item?.product?.code ?? item?.codigo ?? "");
+    }
+
+    function getItemPrice(item) {
+        return number(item?.price ?? item?.unitPrice ?? item?.precio ?? item?.salePrice);
+    }
+
+    function getSaleTotal(sale, items) {
+        const explicit = sale?.total ?? sale?.amount ?? sale?.totalAmount ?? sale?.importe;
+        if (explicit !== undefined && explicit !== null && explicit !== "") return number(explicit);
+        return items.reduce((sum, item) => sum + getItemQty(item) * getItemPrice(item), 0);
+    }
+
+    function getPayment(sale) {
+        const method = String(sale?.method ?? sale?.paymentMethod ?? sale?.metodoPago ?? sale?.metodo ?? "otro").toLowerCase();
+        if (method.includes("efect")) return "Efectivo";
+        if (method.includes("qr")) return "QR";
+        return "Otro";
+    }
+
+    function getCurrentAndClosedCash(cashData) {
+        const current = cashData?.current;
+        const closures = Array.isArray(cashData?.closures) ? cashData.closures : [];
+        const sessions = closures.map(closure => ({
+            movements: Array.isArray(closure?.movements) ? closure.movements : [],
+            openedAt: closure?.openedAt,
+            closedAt: closure?.closedAt ?? closure?.date ?? closure?.closed_at
+        }));
+        if (current && Array.isArray(current.movements)) {
+            sessions.push({ movements: current.movements, openedAt: current.openedAt, closedAt: null });
+        }
+        return sessions;
+    }
+
+    function inRange(value, from, to) {
+        const key = dateKey(value);
+        if (!key) return false;
+        return (!from || key >= from) && (!to || key <= to);
+    }
+
+    function renderTable(tbodyId, rows, columns, emptyText) {
+        const tbody = $(tbodyId);
+        if (!rows.length) {
+            tbody.innerHTML = `<tr><td class="empty" colspan="${columns.length}">${escapeHTML(emptyText)}</td></tr>`;
+            return;
+        }
+        tbody.innerHTML = rows.map(row => `<tr>${columns.map(column => {
+            const value = column.render ? column.render(row) : escapeHTML(row[column.key] ?? "");
+            return `<td class="${column.numeric ? "numeric" : ""}">${value}</td>`;
+        }).join("")}</tr>`).join("");
+    }
+
+    function buildReport() {
+        const productsRead = readJSON(KEYS.products, []);
+        const salesRead = readJSON(KEYS.sales, []);
+        const cashRead = readJSON(KEYS.cash, { current: null, closures: [] });
+        const movementsRead = readJSON(KEYS.movements, []);
+
+        const products = asArray(productsRead.value);
+        const sales = asArray(salesRead.value);
+        const cashData = cashRead.value && typeof cashRead.value === "object" ? cashRead.value : { current: null, closures: [] };
+        const inventoryMovements = asArray(movementsRead.value);
+
+        const from = $("dateFrom").value;
+        const to = $("dateTo").value;
+
+        const productById = new Map(products.map(product => [getProductId(product), product]));
+        const allSales = sales.map((sale, index) => {
+            const items = getSaleItems(sale);
+            return { sale, index, items, date: getSaleDate(sale), total: getSaleTotal(sale, items), payment: getPayment(sale) };
+        }).filter(entry => inRange(entry.date, from, to));
+
+        let totalSales = 0, totalCost = 0, costKnown = true;
+        const paymentStats = {
+            Efectivo: { total: 0, count: 0 },
+            QR: { total: 0, count: 0 },
+            Otro: { total: 0, count: 0 }
+        };
+        const topProducts = new Map();
+        const csvRows = [];
+
+        allSales.forEach(entry => {
+            totalSales += entry.total;
+            paymentStats[entry.payment].total += entry.total;
+            paymentStats[entry.payment].count += 1;
+
+            let saleCost = 0;
+            entry.items.forEach(item => {
+                const qty = getItemQty(item);
+                const id = getItemProductId(item);
+                const product = productById.get(id);
+                const storedCost = item?.cost ?? item?.unitCost ?? item?.purchasePrice ?? item?.precioCompra;
+                if (storedCost !== undefined && storedCost !== null && storedCost !== "") {
+                    saleCost += number(storedCost) * qty;
+                } else if (product && (product.cost !== undefined || product.purchasePrice !== undefined || product.precioCompra !== undefined || product.precio_compra !== undefined)) {
+                    saleCost += getProductCost(product) * qty;
+                } else {
+                    costKnown = false;
+                }
+
+                const key = id || getItemCode(item) || getItemName(item);
+                const current = topProducts.get(key) || {
+                    id, code: getItemCode(item) || (product ? getProductCode(product) : ""),
+                    name: getItemName(item) || (product ? getProductName(product) : "Producto"),
+                    qty: 0, total: 0
+                };
+                current.qty += qty;
+                current.total += qty * getItemPrice(item);
+                topProducts.set(key, current);
+
+                csvRows.push({
+                    fecha: entry.date || "",
+                    venta: entry.sale?.saleNumber ?? entry.sale?.number ?? entry.sale?.id ?? `Venta ${entry.index + 1}`,
+                    codigo: getItemCode(item) || (product ? getProductCode(product) : ""),
+                    producto: getItemName(item) || (product ? getProductName(product) : ""),
+                    unidades: qty,
+                    precioUnitario: getItemPrice(item),
+                    importe: qty * getItemPrice(item),
+                    metodoPago: entry.payment
+                });
+            });
+
+            if (!entry.items.length) costKnown = false;
+        });
+
+        if (!allSales.length) {
+            $("salesTotal").textContent = money(0);
+            $("salesCount").textContent = "0 ventas en el período";
+            $("costTotal").textContent = money(0);
+            $("grossProfit").textContent = money(0);
+        } else {
+            $("salesTotal").textContent = money(totalSales);
+            $("salesCount").textContent = `${allSales.length} venta${allSales.length === 1 ? "" : "s"} en el período`;
+            $("costTotal").textContent = costKnown ? money(totalCost = allSales.reduce((sum, entry) => sum + entry.items.reduce((itemSum, item) => {
+                const id = getItemProductId(item);
+                const product = productById.get(id);
+                const storedCost = item?.cost ?? item?.unitCost ?? item?.purchasePrice ?? item?.precioCompra;
+                if (storedCost !== undefined && storedCost !== null && storedCost !== "") return itemSum + number(storedCost) * getItemQty(item);
+                if (product && (product.cost !== undefined || product.purchasePrice !== undefined || product.precioCompra !== undefined || product.precio_compra !== undefined)) return itemSum + getProductCost(product) * getItemQty(item);
+                return itemSum;
+            }, 0), 0)) : "No disponible";
+            $("grossProfit").textContent = costKnown ? money(totalSales - totalCost) : "No disponible";
+        }
+
+        const paymentRows = Object.entries(paymentStats)
+            .map(([method, stats]) => ({ method, total: stats.total, count: stats.count }))
+            .filter(row => row.count > 0)
+            .map(row => ({ ...row, total: money(row.total) }));
+        renderTable("paymentTable", paymentRows, [
+            { key: "method" }, { key: "total", numeric: true }, { key: "count", numeric: true }
+        ], "No hay ventas registradas en este período.");
+
+        const lowStock = products.filter(product => {
+            const stock = number(product.stock ?? product.existencia);
+            const min = number(product.minStock ?? product.stockMinimo ?? product.stock_minimo);
+            return min > 0 && stock <= min;
+        }).sort((a, b) => number(a.stock ?? a.existencia) - number(b.stock ?? b.existencia));
+
+        $("lowStockCount").textContent = String(lowStock.length);
+        renderTable("lowStockTable", lowStock.map(product => ({
+            code: getProductCode(product) || "—",
+            name: getProductName(product),
+            stock: number(product.stock ?? product.existencia),
+            min: number(product.minStock ?? product.stockMinimo ?? product.stock_minimo)
+        })), [
+            { key: "code" }, { key: "name" }, { key: "stock", numeric: true }, { key: "min", numeric: true }
+        ], "No hay productos con stock bajo.");
+
+        const topRows = [...topProducts.values()].sort((a, b) => b.qty - a.qty).slice(0, 10).map(row => ({
+            ...row, total: money(row.total)
+        }));
+        renderTable("topProductsTable", topRows, [
+            { key: "code" }, { key: "name" }, { key: "qty", numeric: true }, { key: "total", numeric: true }
+        ], "No hay ventas de productos en este período.");
+
+        let cashIncome = 0, cashExpenses = 0, cashMovementsCount = 0;
+        getCurrentAndClosedCash(cashData).forEach(session => {
+            (session.movements || []).forEach(movement => {
+                if (!inRange(movement.date ?? movement.timestamp, from, to)) return;
+                const amount = number(movement.amount);
+                if (movement.type === "ingreso") cashIncome += amount;
+                if (movement.type === "egreso") cashExpenses += amount;
+                cashMovementsCount += 1;
+            });
+        });
+        const cashRows = [
+            { label: "Ingresos registrados", value: money(cashIncome) },
+            { label: "Egresos registrados", value: money(cashExpenses) },
+            { label: "Balance de movimientos (ingresos − egresos)", value: money(cashIncome - cashExpenses) },
+            { label: "Cantidad de movimientos", value: String(cashMovementsCount) }
+        ];
+        renderTable("cashTable", cashRows, [
+            { key: "label" }, { key: "value", numeric: true }
+        ], "No hay movimientos de caja en este período.");
+
+        lastReportRows = csvRows;
+        const problems = [];
+        if (productsRead.error) problems.push("No se pudo leer el inventario.");
+        if (salesRead.error) problems.push("No se pudo leer el historial de ventas.");
+        if (cashRead.error) problems.push("No se pudo leer la caja.");
+        if (movementsRead.error) problems.push("No se pudieron leer los movimientos de inventario.");
+        const present = [
+            productsRead.exists ? "inventario disponible" : "sin datos de inventario",
+            salesRead.exists ? "historial de ventas disponible" : "sin historial de ventas",
+            cashRead.exists ? "caja disponible" : "sin datos de caja",
+            movementsRead.exists ? "movimientos de inventario disponibles" : "sin movimientos de inventario"
+        ];
+        $("dataNotice").textContent = problems.length
+            ? problems.join(" ")
+            : "Lectura completada. " + (allSales.length ? "Se encontraron ventas dentro del período." : "No se encontraron ventas dentro del período.");
+        $("dataStatus").textContent = present.join(" · ") + (costKnown ? " · costo de venta calculable" : " · costo histórico incompleto");
+    }
+
+    function exportCSV() {
+        if (!lastReportRows.length) {
+            alert("No hay ventas de productos para exportar en el período seleccionado.");
+            return;
+        }
+        const headers = ["fecha", "venta", "codigo", "producto", "unidades", "precioUnitario", "importe", "metodoPago"];
+        const csv = [headers.join(";"), ...lastReportRows.map(row => headers.map(key => {
+            const value = String(row[key] ?? "").replace(/"/g, '""');
+            return `"${value}"`;
+        }).join(";"))].join("\r\n");
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "cajacontrol-reporte-ventas.csv";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+    }
+
+    function setDefaultDates() {
+        const today = new Date();
+        const start = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+        const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+        const toInput = date => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+        $("dateFrom").value = toInput(firstDay);
+        $("dateTo").value = toInput(start);
+    }
+
+    $("applyFilters").addEventListener("click", buildReport);
+    $("refreshButton").addEventListener("click", buildReport);
+    $("exportCsv").addEventListener("click", exportCSV);
+    setDefaultDates();
+    buildReport();
+})();
+</script>
 </body>
 </html>
-```
