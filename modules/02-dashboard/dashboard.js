@@ -9,11 +9,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const supabaseClient = window.supabaseClient;
 
     function mostrarMensaje(texto, tipo = "error") {
-        console.log(`CajaControl: ${texto}`);
+        console.log("CajaControl: " + texto);
 
         if (mensaje) {
             mensaje.textContent = texto;
-            mensaje.className = `mensaje visible ${tipo}`;
+            mensaje.className = "mensaje visible " + tipo;
         } else {
             console.error(texto);
         }
@@ -65,7 +65,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (!perfil) {
             await supabaseClient.auth.signOut();
-
             mostrarMensaje(
                 "No se encontró el perfil de este usuario. Contacta al administrador."
             );
@@ -74,7 +73,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (!perfil.activo) {
             await supabaseClient.auth.signOut();
-
             mostrarMensaje(
                 "Tu perfil está inactivo. Contacta al administrador."
             );
@@ -112,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const nombreEmpresa = document.getElementById("empresa-nombre");
 
         if (nombreEmpresa) {
-            nombreEmpresa.textContent = "Cargando empresa…";
+            nombreEmpresa.textContent = "Cargando empresa...";
         }
 
         // 6. Consultar la empresa vinculada al perfil
@@ -170,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }).format(new Date());
         }
 
-        // 8. Guardar el perfil para otros módulos
+        // 8. Guardar perfil para otros módulos
         window.cajaControlPerfil = perfil;
 
         console.log("CajaControl: panel cargado correctamente.", {
