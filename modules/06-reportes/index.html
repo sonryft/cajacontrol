@@ -386,16 +386,25 @@
             paymentStats[entry.payment].total += entry.total;
             paymentStats[entry.payment].count += 1;
 
-            let saleCost = 0;
+            if (!entry.items.length) {
+                costKnown = false;
+            }
+
             entry.items.forEach(item => {
                 const qty = getItemQty(item);
                 const id = getItemProductId(item);
                 const product = productById.get(id);
-                const storedCost = item?.cost ?? item?.unitCost ?? item?.purchasePrice ?? item?.precioCompra;
+                const storedCost = item?.cost ?? item?.unitCost ?? item?.purchasePrice ?? item?.precioCompra ?? item?.precio_compra;
+
+                // Prefer a historical cost saved on the sale item.
+                // If absent, use the current inventory cost only as an estimate.
                 if (storedCost !== undefined && storedCost !== null && storedCost !== "") {
-                    saleCost += number(storedCost) * qty;
-                } else if (product && (product.cost !== undefined || product.purchasePrice !== undefined || product.precioCompra !== undefined || product.precio_compra !== undefined)) {
-                    saleCost += getProductCost(product) * qty;
+                    totalCost += number(storedCost) * qty;
+                } else if (product && (
+                    product.cost !== undefined || product.purchasePrice !== undefined ||
+                    product.precioCompra !== undefined || product.precio_compra !== undefined
+                )) {
+                    totalCost += getProductCost(product) * qty;
                 } else {
                     costKnown = false;
                 }
@@ -421,29 +430,12 @@
                     metodoPago: entry.payment
                 });
             });
-
-            if (!entry.items.length) costKnown = false;
         });
 
-        if (!allSales.length) {
-            $("salesTotal").textContent = money(0);
-            $("salesCount").textContent = "0 ventas en el período";
-            $("costTotal").textContent = money(0);
-            $("grossProfit").textContent = money(0);
-        } else {
-            $("salesTotal").textContent = money(totalSales);
-            $("salesCount").textContent = `${allSales.length} venta${allSales.length === 1 ? "" : "s"} en el período`;
-            $("costTotal").textContent = costKnown ? money(totalCost = allSales.reduce((sum, entry) => sum + entry.items.reduce((itemSum, item) => {
-                const id = getItemProductId(item);
-                const product = productById.get(id);
-                const storedCost = item?.cost ?? item?.unitCost ?? item?.purchasePrice ?? item?.precioCompra;
-                if (storedCost !== undefined && storedCost !== null && storedCost !== "") return itemSum + number(storedCost) * getItemQty(item);
-                if (product && (product.cost !== undefined || product.purchasePrice !== undefined || product.precioCompra !== undefined || product.precio_compra !== undefined)) return itemSum + getProductCost(product) * getItemQty(item);
-                return itemSum;
-            }, 0), 0)) : "No disponible";
-            $("grossProfit").textContent = costKnown ? money(totalSales - totalCost) : "No disponible";
-        }
-
+        $("salesTotal").textContent = money(totalSales);
+        $("salesCount").textContent = `${allSales.length} venta${allSales.length === 1 ? "" : "s"} en el período`;
+        $("costTotal").textContent = costKnown ? money(totalCost) : "No disponible";
+        $("grossProfit").textContent = costKnown ? money(totalSales - totalCost) : "No disponible";
         const paymentRows = Object.entries(paymentStats)
             .map(([method, stats]) => ({ method, total: stats.total, count: stats.count }))
             .filter(row => row.count > 0)
