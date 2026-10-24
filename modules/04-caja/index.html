@@ -108,7 +108,25 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
  const state = {client:null,user:null,profile:null,boxes:[],methods:[],turn:null,movements:[],arqueos:[],history:[]};
  function message(text,kind="ok"){const el=$("message");el.className=kind;el.textContent=text;el.style.display="block";window.scrollTo({top:0,behavior:"smooth"});}
  function clearMessage(){const el=$("message");el.className="";el.textContent="";el.style.display="none";}
- function fail(error,context=""){console.error(context,error);message((context?context+": ":"")+(error?.message||String(error)||"Ocurrió un error."),"error");}
+ function fail(error, context = "") {
+  console.error("========== ERROR CAJACONTROL ==========");
+  console.error("Contexto:", context);
+  console.error("Mensaje:", error?.message);
+  console.error("Código:", error?.code);
+  console.error("Detalles:", error?.details);
+  console.error("Sugerencia:", error?.hint);
+  console.error("Error completo:", error);
+  console.error("=======================================");
+
+  const details = [
+    context,
+    error?.message || String(error) || "Ocurrió un error.",
+    error?.code ? "Código: " + error.code : "",
+    error?.hint ? "Sugerencia: " + error.hint : ""
+  ].filter(Boolean).join("\n");
+
+  message(details, "error");
+}
  function role(){return String(state.profile?.rol||"").trim().toLowerCase();}
  function isAdmin(){return ["admin","administrador"].includes(role());}
  function companyId(){return state.profile?.empresa_id;}
