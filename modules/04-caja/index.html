@@ -268,7 +268,7 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
 
   // Protección: si el importe quedó escrito por error en el campo Nota,
   // lo recuperamos como fondo inicial cuando el campo de importe está en 0.
-  const noteLooksLikeAmount = /^\\d+(?:[.,]\\d{1,2})?$/.test(note);
+  const noteLooksLikeAmount = /^\d+(?:[.,]\d{1,2})?$/.test(note);
   if (Number.isFinite(amount) && amount === 0 && noteLooksLikeAmount && Number(note.replace(",", ".")) > 0) {
     amount = Number(note.replace(",", "."));
     note = "";
