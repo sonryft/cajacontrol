@@ -101,7 +101,7 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
 (() => {
  "use strict";
  const SUPABASE_URL = "https://fpsdnshhyosmqccdinsn.supabase.co";
- const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_BrcHw-AXiBBUxTW4E1Yz_g_B3CAF_ej";
+ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_BrcHw-AXiBBUxTW4E1Yz_gB3CAF_ej";
  const $ = id => document.getElementById(id);
  const money = n => new Intl.NumberFormat("es-BO",{style:"currency",currency:"BOB"}).format(Number(n)||0);
  const dateText = v => v ? new Date(v).toLocaleString("es-BO",{dateStyle:"short",timeStyle:"short"}) : "—";
@@ -243,13 +243,39 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
   e.preventDefault();clearMessage();
   if(!isAdmin())return message("Solo el administrador puede abrir la caja.","error");
   if(state.turn)return message("Ya existe una caja abierta.","error");
-  const boxId=$("cashBox").value,amount=Number($("openingAmount").value),note=$("openingNote").value.trim();
-  if(!boxId||!Number.isFinite(amount)||amount<0)return message("Selecciona una caja e introduce un fondo válido.","error");
-  const {data,error}=await state.client.rpc("abrir_caja",{p_caja_id:boxId,p_monto_inicial:amount,p_observaciones:note||null});
-  if(error)throw error;
-  message("Caja abierta correctamente.");
-  $("openingAmount").value="0";$("openingNote").value="";
-  await loadTurnAndData();await loadHistory();
+  const boxId = $("cashBox").value;
+  const rawAmount = $("openingAmount").value;
+  const amount = Number(rawAmount);
+  const note = $("openingNote").value.trim();
+
+  // Diagnóstico temporal: comprobar qué importe lee el formulario.
+  console.log("Fondo introducido:", rawAmount);
+  console.log("Fondo convertido:", amount);
+
+  if (rawAmount.trim() === "" || !boxId || !Number.isFinite(amount) || amount < 0) {
+    return message("Selecciona una caja e introduce un fondo inicial válido.", "error");
+  }
+
+  const payload = {
+    p_caja_id: boxId,
+    p_monto_inicial: amount,
+    p_observaciones: note || null
+  };
+  console.log("Datos enviados a Supabase:", payload);
+
+  const { data, error } = await state.client.rpc("abrir_caja", payload);
+  console.log("Respuesta de abrir_caja:", { data, error });
+
+  if (error) throw error;
+  if (data && Number(data.monto_inicial) !== amount) {
+    throw new Error("Supabase devolvió un fondo inicial diferente al introducido.");
+  }
+
+  message("Caja abierta correctamente. Fondo inicial: " + money(amount));
+  $("openingAmount").value = "0";
+  $("openingNote").value = "";
+  await loadTurnAndData();
+  await loadHistory();
  }
  async function addMovement(e){
   e.preventDefault();clearMessage();
