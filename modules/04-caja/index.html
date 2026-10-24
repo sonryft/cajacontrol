@@ -262,15 +262,25 @@ form{display:grid;gap:12px}.form-grid{display:grid;grid-template-columns:1fr 1fr
   if(!isAdmin())return message("Solo el administrador puede abrir la caja.","error");
   if(state.turn)return message("Ya existe una caja abierta.","error");
   const boxId = $("cashBox").value;
-  const rawAmount = $("openingAmount").value;
-  const amount = Number(rawAmount);
-  const note = $("openingNote").value.trim();
+  const rawAmount = $("openingAmount").value.trim();
+  let amount = rawAmount === "" ? NaN : Number(rawAmount);
+  let note = $("openingNote").value.trim();
 
-  // Diagnóstico temporal: comprobar qué importe lee el formulario.
-  console.log("Fondo introducido:", rawAmount);
-  console.log("Fondo convertido:", amount);
+  // Protección: si el importe quedó escrito por error en el campo Nota,
+  // lo recuperamos como fondo inicial cuando el campo de importe está en 0.
+  const noteLooksLikeAmount = /^\\d+(?:[.,]\\d{1,2})?$/.test(note);
+  if (Number.isFinite(amount) && amount === 0 && noteLooksLikeAmount && Number(note.replace(",", ".")) > 0) {
+    amount = Number(note.replace(",", "."));
+    note = "";
+    $("openingAmount").value = String(amount);
+    $("openingNote").value = "";
+  }
 
-  if (rawAmount.trim() === "" || !boxId || !Number.isFinite(amount) || amount < 0) {
+  console.log("Fondo leído del campo:", rawAmount);
+  console.log("Fondo final enviado:", amount);
+  console.log("Nota final:", note);
+
+  if (!boxId || !Number.isFinite(amount) || amount < 0) {
     return message("Selecciona una caja e introduce un fondo inicial válido.", "error");
   }
 
